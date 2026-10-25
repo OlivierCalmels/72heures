@@ -18,7 +18,7 @@ Un site d'une seule page pour aider chaque foyer à constituer son sac d'évacua
 
 ## Données et vie privée
 
-Rien n'est envoyé sur un serveur. Le site est entièrement statique :
+Rien n'est envoyé sur un serveur. Le site est entièrement statique et ne contacte aucun service tiers : les polices (licence SIL OFL) sont hébergées dans `fonts/`, réduites aux caractères latins.
 
 | Donnée | Où elle est stockée |
 |---|---|
