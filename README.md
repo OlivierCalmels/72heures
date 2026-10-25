@@ -1,5 +1,7 @@
 # Sac 72 h
 
+Site : https://oliviercalmels.github.io/72heures/
+
 Un site d'une seule page pour aider chaque foyer à constituer son sac d'évacuation d'urgence, d'après la liste du guide gouvernemental « Tous responsables » ([info.gouv.fr](https://www.info.gouv.fr/risques/se-preparer-a-une-situation-durgence)).
 
 ## Fonctionnalités
@@ -33,7 +35,7 @@ Format d'export :
 
 1. Poussez ce dépôt sur GitHub.
 2. Dans **Settings → Pages**, choisissez **Deploy from a branch**, branche `main`, dossier `/ (root)`.
-3. Le site est en ligne quelques minutes plus tard à `https://<utilisateur>.github.io/<dépôt>/`.
+3. Le site est en ligne quelques minutes plus tard à https://oliviercalmels.github.io/72heures/
 
 ## Configuration
 
