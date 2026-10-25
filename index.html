@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="fr">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sac 72 h</title>
+<meta name="description" content="Constituez votre sac d'évacuation d'urgence 72 h selon la liste officielle du Gouvernement : checklist, produits, dossier de documents à imprimer ou copier sur clé USB.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout : bandeau signalétique, onglets, une colonne de contenu (max 1080px) qui passe en 2 colonnes pour les cartes de catégories */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --ink:#14212e; --muted:#5a6876; --line:#d6dde4;
+  --signal:#f5c400; --signal-ink:#1b1b00; --blue:#1d4f91; --red:#c7362f; --ok:#2f7d4f;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f161d; --surface:#17212b; --ink:#e6ecf1; --muted:#9aa8b5; --line:#2b3a48;
+  --signal:#f5c400; --signal-ink:#1b1b00; --blue:#7fb0f0; --red:#ff7a70; --ok:#6cc995; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161d; --surface:#17212b; --ink:#e6ecf1; --muted:#9aa8b5; --line:#2b3a48;
+  --signal:#f5c400; --signal-ink:#1b1b00; --blue:#7fb0f0; --red:#ff7a70; --ok:#6cc995; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+a{color:var(--blue)}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.1;margin:0}
+.label{font-family:var(--f-display);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:.85rem;color:var(--muted)}
+
+/* Bandeau */
+.hazard{height:8px;background:repeating-linear-gradient(-45deg,var(--signal) 0 14px,#14212e 14px 28px)}
+header.top{background:var(--surface);border-bottom:1px solid var(--line)}
+header.top .wrap{padding-block:22px 0;display:grid;gap:14px}
+.brand{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.brand h1{font-size:clamp(2.4rem,7vw,3.6rem);font-weight:700;letter-spacing:-.01em}
+.brand h1 span{background:var(--signal);color:var(--signal-ink);padding:0 .18em}
+.brand p{margin:0 0 6px;color:var(--muted);max-width:52ch}
+.counter{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+.meter{flex:1 1 220px;min-width:0}
+.bar{height:12px;background:var(--line);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
+.big{font-family:var(--f-display);font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums}
+nav.tabs{display:flex;gap:4px;overflow-x:auto}
+nav.tabs button{font:600 1.1rem var(--f-display);text-transform:uppercase;letter-spacing:.06em;background:none;border:0;color:var(--muted);padding:10px 14px;border-bottom:4px solid transparent;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--signal)}
+
+main .wrap{padding-block:28px 60px;display:grid;gap:28px}
+.lede{display:grid;gap:10px;max-width:70ch}
+.lede h2{font-size:2rem}
+.note{font-size:.9rem;color:var(--muted)}
+
+/* Foyer */
+.household{display:flex;flex-wrap:wrap;gap:16px;align-items:end;background:var(--surface);border:1px solid var(--line);padding:16px}
+.household label{display:grid;gap:4px;font-size:.9rem}
+.household input{width:80px}
+.calc{flex:1 1 240px;min-width:0;font-size:.95rem}
+.calc b{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);padding:8px 10px;border-radius:3px;width:100%}
+textarea{min-height:80px;resize:vertical}
+button.btn,label.btn{font:700 1rem var(--f-body);border:2px solid var(--ink);background:var(--surface);color:var(--ink);padding:9px 16px;border-radius:3px;cursor:pointer}
+button.btn.primary,label.btn.primary{background:var(--signal);border-color:var(--signal);color:var(--signal-ink)}
+button.btn.ghost,label.btn.ghost{border-color:var(--line);font-weight:400;padding:6px 10px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:.85rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:5px 12px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* Checklist */
+.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:20px}
+.cat{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--c,var(--signal))}
+.cat header{display:flex;justify-content:space-between;align-items:baseline;padding:14px 16px 6px;gap:10px}
+.cat h3{font-size:1.5rem}
+.cat .count{font-family:var(--f-mono);font-size:.9rem;color:var(--muted)}
+.item{display:grid;grid-template-columns:28px 1fr;gap:4px 10px;padding:12px 16px;border-top:1px solid var(--line)}
+.item input[type=checkbox]{width:22px;height:22px;margin:2px 0 0;accent-color:var(--ok)}
+.item .body{min-width:0;display:grid;gap:4px}
+.item .name{font-weight:700}
+.item.done .name{text-decoration:line-through;text-decoration-color:var(--muted);color:var(--muted)}
+.item .meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.88rem;color:var(--muted);align-items:center}
+.tag{font:600 .72rem var(--f-display);letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px}
+.tag.off{background:var(--blue);color:var(--surface)}
+.tag.plus{border:1px solid var(--muted);color:var(--muted)}
+.item .exp{display:flex;gap:6px;align-items:center}
+.item .exp input{width:auto;padding:3px 6px;font-size:.85rem}
+.item .exp.late input{border-color:var(--red);color:var(--red)}
+.cat.prio{grid-column:1/-1}
+.cat.prio .list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.cat.prio header p{margin:0;font-size:.9rem;color:var(--muted);flex-basis:100%}
+.cat.prio header{flex-wrap:wrap}
+.lvl{font:700 .72rem var(--f-display);letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px;border:1.5px solid currentColor}
+.lvl.p1{color:var(--red)} .lvl.p2{color:var(--blue)} .lvl.p3{color:var(--muted)}
+.theme{font-size:.82rem;color:var(--muted)}
+.sugg{display:grid;gap:12px}
+.sugg-group{display:grid;gap:6px}
+.sugg-group p{margin:0;font-size:.88rem;color:var(--muted)}
+.sugg-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip.added{border-color:var(--ok);color:var(--ok)}
+.needs-wrap{display:grid;gap:10px}
+.needs-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+.needs-head h3{font-size:1.7rem}
+.needs-head .big{font-size:1.3rem}
+.needs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:12px}
+.need{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--red);padding:12px 14px;display:grid;gap:8px;align-content:start}
+.need.part{border-left-color:var(--signal)} .need.ok{border-left-color:var(--ok)}
+.need header{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.need h4{font:700 1.3rem var(--f-display);margin:0}
+.pill{font:700 .75rem var(--f-display);text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:999px}
+.pill.no{background:var(--red);color:var(--surface)} .pill.part{background:var(--signal);color:var(--signal-ink)} .pill.ok{background:var(--ok);color:var(--surface)}
+.need ul{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:.9rem}
+.need li{display:grid;grid-template-columns:16px 1fr;gap:6px;color:var(--muted)}
+.need li.yes{color:var(--ink)}
+.need li small{color:var(--red)}
+.need .note{margin:0;font-size:.82rem}
+.savebar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 12px;border:1px solid var(--line);background:var(--bg);font-size:.9rem}
+.savebar .dot{width:10px;height:10px;border-radius:50%;background:var(--ok);flex:none}
+.savebar.warn .dot{background:var(--signal)}
+.savebar.err .dot{background:var(--red)}
+.save-msg{flex:1 1 220px;min-width:0}
+.save-actions{display:flex;gap:8px}
+.btn.small{padding:5px 12px;font-size:.9rem;cursor:pointer}
+.confirm{border:2px solid var(--signal);background:var(--surface);padding:12px 14px;display:grid;gap:8px}
+.confirm p{margin:0}
+.buy{font-weight:700;text-decoration:none}
+.buy::after{content:" ↗"}
+
+/* Documents */
+.panel{background:var(--surface);border:1px solid var(--line);padding:18px;display:grid;gap:14px}
+.panel h3{font-size:1.5rem}
+.rows{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;padding:10px;border:1px dashed var(--line)}
+.row .del{justify-self:start}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
+.svc{display:grid;gap:6px;padding:12px;border:1px solid var(--line)}
+.svc b{font-family:var(--f-display);font-size:1.15rem}
+.drop{border:2px dashed var(--muted);padding:22px;text-align:center;display:grid;gap:8px;cursor:pointer}
+.drop.over{border-color:var(--signal);background:color-mix(in srgb,var(--signal) 12%,transparent)}
+.files{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.file{border:1px solid var(--line);display:grid;gap:6px;padding:8px;font-size:.85rem;min-width:0}
+.file .thumb{aspect-ratio:4/3;max-width:100%;background:var(--bg);display:grid;place-items:center;overflow:hidden}
+.file .thumb img{width:100%;height:100%;object-fit:cover}
+.file .fname{overflow-wrap:anywhere}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.status{font-size:.9rem;color:var(--ok)}
+.emerg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.emerg div{border:1px solid var(--line);padding:8px 10px}
+.emerg b{font-family:var(--f-display);font-size:1.8rem;display:block;line-height:1;color:var(--red)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:480px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+td input{min-width:90px}
+.freq{font-family:var(--f-mono)}
+.privacy{border-left:5px solid var(--ok);background:var(--surface);padding:12px 16px}
+
+/* Ressources */
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:20px}
+.links{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.links li{padding:10px 0;border-top:1px solid var(--line);display:grid;gap:2px}
+.links a{font-weight:700}
+.links span{font-size:.88rem;color:var(--muted)}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
+footer .wrap{padding-block:20px}
+
+/* Impression */
+#print-area{display:none}
+@media print{
+  body{background:#fff;color:#000;font-size:11pt}
+  body>*:not(#print-area){display:none!important}
+  #print-area{display:block}
+  #print-area h1{font-family:var(--f-display);font-size:26pt;border-bottom:4px solid #000;margin-bottom:8pt}
+  #print-area h2{font-family:var(--f-display);font-size:16pt;margin:14pt 0 6pt;border-bottom:1px solid #000}
+  #print-area table{min-width:0;font-size:10pt}
+  #print-area th,#print-area td{border-bottom:1px solid #999;padding:4pt}
+  #print-area .pimg{page-break-inside:avoid;margin:10pt 0}
+  #print-area .pimg img{max-height:22cm;max-width:100%}
+  #print-area .pb{page-break-before:always}
+  #print-area .ck{display:inline-block;width:10pt;height:10pt;border:1px solid #000;margin-right:6pt}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="hazard" aria-hidden="true"></div>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <h1><span>Sac 72 h</span></h1>
+      <p>Préparez le sac qui permet à votre foyer de tenir trois jours seul, selon la liste du guide gouvernemental « Tous responsables ».</p>
+    </div>
+    <div class="counter">
+      <div class="meter">
+        <div class="label" id="meter-label">Votre sac</div>
+        <div class="bar" role="progressbar" aria-labelledby="meter-label" aria-valuemin="0" aria-valuemax="100" id="bar"><i id="bar-fill"></i></div>
+      </div>
+      <div><span class="big" id="pct">0 %</span> <span class="note" id="pct-detail"></span></div>
+    </div>
+    <div class="savebar" id="savebar">
+      <span class="dot" aria-hidden="true"></span>
+      <span id="save-msg" class="save-msg">Enregistré dans ce navigateur.</span>
+      <span class="save-actions">
+        <button class="btn primary small" id="export-all">Exporter tout</button>
+        <label class="btn small" for="import-all">Importer<input id="import-all" type="file" accept=".json,application/json" hidden></label>
+      </span>
+    </div>
+    <div class="confirm" id="import-confirm" hidden>
+      <p id="import-summary"></p>
+      <div class="actions"><button class="btn primary" id="import-yes">Remplacer mes données</button><button class="btn ghost" id="import-no">Annuler</button></div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" id="tab-sac" aria-controls="sac" aria-selected="true">Mon sac</button>
+      <button role="tab" id="tab-docs" aria-controls="docs" aria-selected="false">Mes documents</button>
+      <button role="tab" id="tab-res" aria-controls="res" aria-selected="false">S'informer</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- ============ MON SAC ============ -->
+<section id="sac" role="tabpanel" aria-labelledby="tab-sac">
+  <div class="wrap">
+    <div class="lede">
+      <h2>La checklist du sac d'évacuation</h2>
+      <p>Les articles sont rangés par ordre d'importance : commencez par les <b>indispensables</b>, puis complétez. Les articles marqués <span class="tag off">Officiel</span> viennent de la liste publiée sur info.gouv.fr. Ceux marqués <span class="tag plus">Alternative</span> sont des compléments ou des alternatives proposés par la Croix-Rouge, des secouristes ou des pratiquants, sans validation du Gouvernement. Cochez ce que vous avez déjà : votre progression reste enregistrée dans ce navigateur.</p>
+    </div>
+
+    <div class="household">
+      <label for="h-adults">Adultes<input id="h-adults" type="number" min="0" max="20" value="2"></label>
+      <label for="h-kids">Enfants<input id="h-kids" type="number" min="0" max="20" value="1"></label>
+      <label for="h-babies">Bébés<input id="h-babies" type="number" min="0" max="10" value="0"></label>
+      <label for="h-pets">Animaux<input id="h-pets" type="number" min="0" max="10" value="0"></label>
+      <div class="calc" id="calc" aria-live="polite"></div>
+    </div>
+
+    <section class="needs-wrap" aria-labelledby="needs-title">
+      <div class="needs-head"><h3 id="needs-title">Vos besoins vitaux</h3><span class="big" id="needs-score"></span></div>
+      <p class="note">Un même besoin peut être couvert de plusieurs façons. <span class="tag off">Officiel</span> : solution mise en avant par le Gouvernement. <span class="tag plus">Alternative</span> : solution proposée par des secouristes ou des pratiquants, non validée par le Gouvernement. Ce bilan se met à jour selon ce que vous cochez.</p>
+      <div class="needs" id="needs"></div>
+    </section>
+
+    <div class="filters" role="group" aria-label="Filtrer la liste">
+      <button class="chip" data-f="all" aria-pressed="true">Tout</button>
+      <button class="chip" data-f="p1" aria-pressed="false">Indispensables seulement</button>
+      <button class="chip" data-f="todo" aria-pressed="false">À acheter / à trouver</button>
+      <button class="chip" data-f="off" aria-pressed="false">Liste officielle seule</button>
+      <button class="chip" data-f="exp" aria-pressed="false">Avec date de péremption</button>
+    </div>
+
+    <div class="filters" role="group" aria-label="Classer la liste">
+      <span class="label" style="align-self:center">Classer par</span>
+      <button class="chip view" data-v="prio" aria-pressed="true">Importance</button>
+      <button class="chip view" data-v="cat" aria-pressed="false">Thème</button>
+    </div>
+
+    <div class="cats" id="cats"></div>
+
+    <div class="actions">
+      <button class="btn" id="print-check">Imprimer la checklist</button>
+      <button class="btn ghost" id="reset-check">Tout décocher</button>
+      <span class="note">Rappel officiel : vérifiez le sac deux fois par an (péremptions, piles).</span>
+    </div>
+    <p class="note">Les liens « Voir sur Amazon » ouvrent une recherche Amazon.fr. Ce sont des liens affiliés : le site peut toucher une commission sans surcoût pour vous. Aucun produit n'est agréé par l'État.</p>
+  </div>
+</section>
+
+<!-- ============ DOCUMENTS ============ -->
+<section id="docs" role="tabpanel" aria-labelledby="tab-docs" hidden>
+  <div class="wrap">
+    <div class="lede">
+      <h2>Le dossier papier et clé USB</h2>
+      <p>Le guide demande des photocopies des documents essentiels dans une pochette étanche. Remplissez ce dossier une fois, puis imprimez-le d'un bloc ou exportez-le en un seul fichier à copier sur une clé USB.</p>
+    </div>
+    <div class="privacy"><b>Vos données ne quittent pas votre appareil.</b> Rien n'est envoyé sur un serveur : tout est stocké dans ce navigateur. Exportez une sauvegarde si vous changez d'appareil.</div>
+
+    <div class="panel">
+      <h3>Foyer et plan familial</h3>
+      <div class="grid2">
+        <label>Nom du foyer<input id="d-family" placeholder="Famille Martin"></label>
+        <label>Adresse du domicile<input id="d-home" placeholder="12 rue des Lilas, 69003 Lyon"></label>
+        <label>Point de rassemblement si on est séparés<input id="d-meet" placeholder="Parvis de l'église Saint-Pothin"></label>
+        <label>Point de rassemblement hors de la ville<input id="d-meet2" placeholder="Chez Mamie, Villefranche"></label>
+        <label>Qui prend le sac ?<input id="d-who" placeholder="Sophie ; Paul prend les enfants"></label>
+        <label>Où est rangé le sac ?<input id="d-where" placeholder="Placard de l'entrée, étagère haute"></label>
+        <label>Itinéraire d'évacuation principal<input id="d-route1" placeholder="D306 vers le nord, puis A6 direction Villefranche"></label>
+        <label>Itinéraire de secours<input id="d-route2" placeholder="À pied par les quais jusqu'au parc de la Tête d'Or"></label>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Coordonnées des proches</h3>
+      <p class="note">Qui appeler, qui peut vous héberger, qui peut avoir besoin de vous ? Touchez une suggestion pour l'ajouter, puis complétez le nom et le numéro.</p>
+      <div class="sugg" id="sugg"></div>
+      <div class="rows" id="contacts"></div>
+      <div><button class="btn ghost" id="add-contact">+ Ajouter un proche</button></div>
+    </div>
+
+    <div class="panel">
+      <h3>Informations médicales</h3>
+      <p class="note">Une ligne par personne : groupe sanguin, allergies, traitements, médecin.</p>
+      <textarea id="d-medical" placeholder="Paul — groupe O+, allergie pénicilline, Lévothyrox 75 µg le matin"></textarea>
+    </div>
+
+    <div class="panel">
+      <h3>Services publics les plus proches</h3>
+      <p class="note">Trouvez les coordonnées dans l'<a href="https://lannuaire.service-public.fr/navigation/mairie" target="_blank" rel="noopener">annuaire de l'administration</a> (mairie, préfecture).</p>
+      <div class="grid2" id="services"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Radios à écouter</h3>
+      <p class="note">En crise, le Gouvernement demande d'écouter la radio locale publique du réseau <b>ici</b> (anciennement France Bleu). Notez sa fréquence FM chez vous : elle change selon la ville.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Station</th><th>Fréquence chez moi</th><th>Pourquoi</th></tr></thead>
+        <tbody id="radios"></tbody>
+      </table></div>
+    </div>
+
+    <div class="panel">
+      <h3>Numéros d'urgence</h3>
+      <div class="emerg">
+        <div><b>15</b>Samu</div><div><b>17</b>Police</div><div><b>18</b>Pompiers</div><div><b>112</b>Urgence européen</div><div><b>114</b>Par SMS (sourds, silencieux)</div><div><b>196</b>Urgence en mer</div><div><b>191</b>Urgence aéronautique</div>
+      </div>
+      <p class="note">Ces numéros sont imprimés automatiquement en tête du dossier.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Photos et copies de documents</h3>
+      <p class="note">Ajoutez les photos de vos proches (récentes, de face, pour les recherches), les scans de pièces d'identité, carte Vitale, ordonnances, attestation d'assurance habitation, livret de famille.</p>
+      <label class="drop" id="drop" for="file-in">
+        <b>Déposez vos fichiers ici ou touchez pour choisir</b>
+        <span class="note">Images (JPG, PNG) et PDF. Les images sont imprimées une par page.</span>
+        <input id="file-in" type="file" multiple accept="image/*,application/pdf" hidden>
+      </label>
+      <div class="files" id="files"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Imprimer et sauvegarder</h3>
+      <div class="actions">
+        <button class="btn primary" id="print-all">Imprimer tout le dossier</button>
+        <button class="btn" id="export-usb">Télécharger le dossier pour clé USB</button>
+        <button class="btn ghost" id="export-json">Exporter tout (.json)</button>
+        <label class="btn ghost" for="import-json" style="cursor:pointer">Importer une sauvegarde<input id="import-json" type="file" accept=".json,application/json" hidden></label>
+      </div>
+      <p class="status" id="doc-status" aria-live="polite"></p>
+      <p class="note"><b>Exporter tout</b> crée un seul fichier .json avec vos cases cochées, votre dossier et vos fichiers. Importez-le sur un autre navigateur ou après avoir vidé celui-ci. Le fichier pour clé USB est une page autonome : elle s'ouvre sur n'importe quel ordinateur sans connexion, avec toutes vos photos intégrées. Pensez à chiffrer la clé : elle contient vos pièces d'identité.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESSOURCES ============ -->
+<section id="res" role="tabpanel" aria-labelledby="tab-res" hidden>
+  <div class="wrap">
+    <div class="lede">
+      <h2>Sources et tutoriels</h2>
+      <p>Les sources officielles d'abord, puis des vidéos pratiques pour apprendre à se débrouiller. Les vidéos de créateurs indépendants ne sont pas validées par l'État : certaines présentent des produits sponsorisés.</p>
+    </div>
+    <div class="res" id="res-list"></div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">Liste établie d'après info.gouv.fr/risques et le guide « Tous responsables » (SGDSN, novembre 2025). Ce site n'est pas un site officiel du Gouvernement. En cas d'urgence, appelez le 112.</div></footer>
+
+<div id="print-area" aria-hidden="true"></div>
+
+<script>
+/* ---------- Configuration ---------- */
+const AFFILIATE_TAG = ""; // ex. "monsite-21" : votre identifiant Partenaires Amazon
+const amazon = q => "https://www.amazon.fr/s?k=" + encodeURIComponent(q) + (AFFILIATE_TAG ? "&tag=" + AFFILIATE_TAG : "");
+
+const CATS = [
+  {id:"eau", name:"Boire et manger", c:"var(--blue)"},
+  {id:"chaud", name:"Avoir chaud", c:"var(--red)"},
+  {id:"soin", name:"Se soigner", c:"var(--ok)"},
+  {id:"info", name:"S'informer et s'éclairer", c:"var(--signal)"},
+  {id:"orient", name:"S'orienter", c:"var(--blue)"},
+  {id:"papiers", name:"Papiers, argent, clés", c:"var(--muted)"},
+  {id:"outils", name:"Outils et vie quotidienne", c:"var(--ink)"}
+];
+// p = importance : 1 indispensable, 2 important, 3 utile
+// off = liste officielle info.gouv.fr ; exp = a une date de péremption
+const ITEMS = [
+  // 1 — Indispensables : sans eux, le sac ne remplit pas sa fonction
+  {id:"eau",p:1,cat:"eau",off:1,exp:1,name:"Eau potable en bouteilles",note:"6 litres par personne (officiel).",q:"pack eau minérale longue conservation"},
+  {id:"nourriture",p:1,cat:"eau",off:1,exp:1,name:"Nourriture non périssable sans cuisson",note:"Conserves à ouverture facile, barres, fruits secs.",q:"ration de survie 72h longue conservation"},
+  {id:"bebe",p:1,cat:"eau",off:1,exp:1,name:"Petits pots et lait pour bébé",note:"Si vous avez un bébé.",q:"petits pots bébé longue conservation",when:"babies"},
+  {id:"medicaments",p:1,cat:"soin",off:1,exp:1,name:"Médicaments personnels",note:"Traitements en cours pour plusieurs jours, avec ordonnance.",q:"pilulier semainier"},
+  {id:"lampe",p:1,cat:"info",off:1,name:"Lampe frontale + piles de rechange",note:"Elle éclaire en gardant les mains libres. Le guide demande une lampe et des piles.",q:"lampe frontale LED"},
+  {id:"radio",p:1,cat:"info",off:1,name:"Radio à piles ou à dynamo + piles de rechange",note:"Pour suivre les consignes des autorités quand internet et le réseau tombent.",q:"radio dynamo solaire FM"},
+  {id:"outils",p:1,cat:"outils",off:1,name:"Couteau multi-outils avec ouvre-boîte",note:"Lame, ciseaux, tournevis, ouvre-boîte dans un seul objet.",q:"couteau multi-outils pince"},
+  {id:"trousse",p:1,cat:"soin",off:1,exp:1,name:"Trousse de premiers secours",note:"Alcool, pansements, compresses.",q:"trousse de secours complète"},
+  {id:"couverture",p:1,cat:"chaud",off:1,name:"Couverture de survie",note:"Une par personne.",q:"couverture de survie lot"},
+  {id:"vetements",p:1,cat:"chaud",off:1,name:"Vêtements chauds",note:"Un change complet par personne, chaussettes, bonnet.",q:"veste polaire compressible"},
+  {id:"photocopies",p:1,cat:"papiers",off:1,name:"Photocopies des documents essentiels",note:"Pièces d'identité, ordonnances, en pochette étanche. Préparez-les dans l'onglet « Mes documents ».",q:"pochette étanche documents A4",doc:1},
+  {id:"contacts",p:1,cat:"papiers",off:0,name:"Liste papier des numéros des proches",note:"Sans téléphone, on ne connaît plus aucun numéro.",doc:1},
+  {id:"argent",p:1,cat:"papiers",off:1,name:"Argent liquide",note:"Petites coupures : les distributeurs peuvent être hors service."},
+  {id:"chargeur",p:1,cat:"info",off:1,name:"Chargeur de téléphone + batterie externe chargée",q:"batterie externe solaire"},
+  {id:"lunettes",p:1,cat:"soin",off:1,name:"Lunettes de vue de secours",note:"Si quelqu'un porte des lunettes.",q:"étui lunettes rigide"},
+  {id:"animaux",p:1,cat:"eau",off:1,exp:1,name:"Nourriture pour animaux",note:"Et une laisse ou une caisse de transport.",q:"croquettes sachet voyage",when:"pets"},
+
+  // 2 — Importants : ils rendent les 72 h nettement plus sûres
+  {id:"cles",p:2,cat:"papiers",off:1,name:"Double des clés maison et voiture",q:"porte-clés mousqueton"},
+  {id:"briquet",p:2,cat:"info",off:1,name:"Briquet",note:"Le guide demande un briquet ou des allumettes.",q:"briquet tempête rechargeable"},
+  {id:"allumettes",p:2,cat:"info",off:1,name:"Allumettes (idéalement tempête, en boîte étanche)",q:"allumettes tempête étanches"},
+  {id:"bougies",p:2,cat:"info",off:1,name:"Bougies",q:"bougies longue durée"},
+  {id:"firesteel",p:3,cat:"info",off:0,name:"Pierre à feu (firesteel)",note:"Fonctionne mouillée, des milliers d'allumages. S'utilise avec le dos du couteau.",q:"pierre à feu ferrocérium"},
+  {id:"filtre",p:2,cat:"eau",off:0,name:"Filtre à membrane (type Sawyer, LifeStraw)",note:"Rend potable l'eau douce trouvée sur place. Retient bactéries et parasites, pas les produits chimiques.",q:"filtre à eau membrane survie"},
+  {id:"pastilles",p:2,cat:"eau",off:1,exp:1,name:"Pastilles de purification (Micropur, Aquatabs)",note:"Le guide les cite en dernier recours. Compter 30 min à 2 h d'attente selon le produit.",q:"pastilles purification eau Micropur"},
+  {id:"contenant",p:2,cat:"eau",off:0,name:"Gourde ou poche à eau pliable",note:"Indispensable pour utiliser un filtre ou des pastilles.",q:"poche à eau pliable 10L"},
+  {id:"sac",p:2,cat:"chaud",off:0,name:"Sac à dos étanche",note:"Le contenant de tout le kit. 35 à 45 L par adulte.",q:"sac à dos étanche 40L"},
+  {id:"carte_locale",p:2,cat:"orient",off:0,name:"Carte détaillée de votre secteur (1:25 000 ou plan de ville)",note:"La plus utile. Type carte IGN TOP 25 en zone rurale, plan de ville en zone urbaine. Surlignez vos itinéraires d'évacuation, vos points de rassemblement, la mairie et l'hôpital.",q:"carte IGN TOP 25"},
+  {id:"boussole",p:2,cat:"orient",off:0,name:"Boussole à plaque",note:"Sert avec la carte détaillée quand les panneaux ou le GPS manquent. Apprenez à l'utiliser avant d'en avoir besoin.",q:"boussole à plaque randonnée"},
+  {id:"carte_route",p:2,cat:"orient",off:0,name:"Carte routière de votre département ou région (1:150 000 à 1:250 000)",note:"Pour rejoindre en voiture votre point de rassemblement éloigné ou votre contact relais, et trouver un itinéraire bis si une route est coupée.",q:"carte routière départementale Michelin"},
+  {id:"carte_france",p:3,cat:"orient",off:0,name:"Carte de France des grands axes (1:1 000 000)",note:"Seulement si votre contact relais habite loin. Un atlas routier fait aussi l'affaire.",q:"carte routière France grands axes"},
+  {id:"pochette_carte",p:3,cat:"orient",off:0,name:"Pochette étanche pour cartes + surligneur",q:"porte-carte étanche"},
+  {id:"sifflet",p:2,cat:"info",off:0,name:"Sifflet",note:"Pour se signaler sans s'épuiser.",q:"sifflet de survie"},
+  {id:"hygiene",p:2,cat:"soin",off:0,exp:1,name:"Hygiène : gel hydroalcoolique, savon, papier toilette, protections",q:"kit hygiène voyage"},
+  {id:"pluie",p:2,cat:"chaud",off:0,name:"Poncho de pluie",q:"poncho pluie réutilisable"},
+  {id:"adhesif",p:2,cat:"outils",off:0,name:"Ruban adhésif large",note:"Le guide le cite pour calfeutrer portes et fenêtres en cas de confinement.",q:"ruban adhésif toilé"},
+  {id:"usb",p:2,cat:"papiers",off:0,name:"Clé USB avec le dossier numérique",note:"De préférence chiffrée.",q:"clé USB chiffrée",doc:1},
+  {id:"masques",p:2,cat:"soin",off:0,name:"Masques FFP2",q:"masques FFP2"},
+
+  // 3 — Utiles : du confort, à ajouter quand le reste est prêt
+  {id:"jeux",p:3,cat:"outils",off:1,name:"Jeux pour occuper le temps",note:"Cartes, petit jeu de société, livre. Précieux avec des enfants.",q:"jeu de cartes voyage"},
+  {id:"couverts",p:3,cat:"eau",off:0,name:"Couverts et gobelet",q:"kit couverts camping inox"},
+  {id:"gants",p:3,cat:"outils",off:0,name:"Gants de travail",q:"gants de travail renforcés"},
+  {id:"carnet",p:3,cat:"outils",off:0,name:"Carnet et stylo",q:"carnet étanche"}
+];
+
+/* Besoins vitaux : chaque besoin peut être couvert de plusieurs façons.
+   level "full" = la solution suffit ; "partial" = dépannage seulement. */
+const NEEDS = [
+  {id:"boire",name:"Boire",sols:[
+    {label:"Bouteilles d'eau stockées (6 L par personne)",items:["eau"],level:"full",off:1},
+    {label:"Pastilles Micropur + contenant",items:["pastilles","contenant"],level:"full",off:1,offNote:"cité en dernier recours"},
+    {label:"Filtre à membrane + contenant",items:["filtre","contenant"],level:"full"}],
+   tip:"L'idéal : les bouteilles pour les premières heures, plus un filtre ou des pastilles pour la suite."},
+  {id:"manger",name:"Manger",sols:[
+    {label:"Nourriture sans cuisson + ouvre-boîte",items:["nourriture","outils"],level:"full",off:1}]},
+  {id:"bebe",name:"Nourrir le bébé",when:"babies",sols:[{label:"Petits pots et lait",items:["bebe"],level:"full",off:1}]},
+  {id:"animaux",name:"Nourrir les animaux",when:"pets",sols:[{label:"Nourriture pour animaux",items:["animaux"],level:"full",off:1}]},
+  {id:"chaud",name:"Avoir chaud",sols:[
+    {label:"Vêtements chauds + couverture de survie",items:["vetements","couverture"],level:"full",off:1},
+    {label:"Poncho de pluie",items:["pluie"],level:"partial"}]},
+  {id:"soin",name:"Se soigner",sols:[
+    {label:"Trousse de secours + médicaments personnels",items:["trousse","medicaments"],level:"full",off:1}]},
+  {id:"eclairer",name:"S'éclairer",sols:[
+    {label:"Lampe (frontale ou de poche) + piles",items:["lampe"],level:"full",off:1},
+    {label:"Bougies",items:["bougies"],level:"partial",off:1}]},
+  {id:"feu",name:"Faire du feu",sols:[
+    {label:"Briquet",items:["briquet"],level:"full",off:1},
+    {label:"Allumettes",items:["allumettes"],level:"full",off:1},
+    {label:"Pierre à feu + couteau",items:["firesteel","outils"],level:"full"}],
+   tip:"Deux moyens différents valent mieux qu'un : un briquet peut se vider, des allumettes prendre l'eau."},
+  {id:"informer",name:"Suivre les consignes",sols:[
+    {label:"Radio à piles ou dynamo",items:["radio"],level:"full",off:1},
+    {label:"Téléphone et batterie (si le réseau tient)",items:["chargeur"],level:"partial",off:1}]},
+  {id:"orienter",name:"S'orienter",sols:[
+    {label:"Carte du secteur + boussole",items:["carte_locale","boussole"],level:"full"},
+    {label:"Carte du secteur seule",items:["carte_locale"],level:"partial"},
+    {label:"Carte routière (pour partir plus loin)",items:["carte_route"],level:"partial"},
+    {label:"Cartes hors ligne sur téléphone + batterie",items:["chargeur"],level:"partial"}],
+   tip:"Le Gouvernement demande de repérer à l'avance ses itinéraires d'évacuation : tracez-les sur la carte papier. Le GPS du téléphone marche sans réseau si les cartes sont téléchargées, mais la batterie limite son usage."},
+  {id:"joindre",name:"Joindre ses proches",sols:[
+    {label:"Liste papier des numéros + batterie",items:["contacts","chargeur"],level:"full"},
+    {label:"Liste papier des numéros",items:["contacts"],level:"partial"},
+    {label:"Sifflet pour se signaler",items:["sifflet"],level:"partial"}]},
+  {id:"papiers",name:"Prouver son identité, payer",sols:[
+    {label:"Photocopies + argent liquide + double des clés",items:["photocopies","argent","cles"],level:"full",off:1}]},
+  {id:"hygiene",name:"Hygiène",sols:[{label:"Kit d'hygiène",items:["hygiene"],level:"full"}]}
+];
+const itemName = id => (ITEMS.find(i=>i.id===id)||{name:id}).name;
+function needStatus(n){
+  const has = id => !!state.checked[id];
+  const full = n.sols.filter(s=>s.level==="full" && s.items.every(has));
+  if(full.length) return {st:"ok", label: full.length>1?"Couvert, avec une solution de secours":"Couvert", sols:full};
+  const anyDone = n.sols.filter(s=>s.items.every(has));
+  const touched = n.sols.some(s=>s.items.some(has));
+  if(anyDone.length || touched) return {st:"part", label:"Partiel"};
+  return {st:"no", label:"Manquant"};
+}
+function renderNeeds(){
+  const list = NEEDS.filter(n=>!n.when || state.house[n.when]>0);
+  let ok=0;
+  $("#needs").innerHTML = list.map(n=>{
+    const s = needStatus(n); if(s.st==="ok") ok++;
+    return `<article class="need ${s.st}"><header><h4>${n.name}</h4><span class="pill ${s.st}">${s.label}</span></header>
+      <ul>${n.sols.map(sol=>{
+        const done = sol.items.every(id=>state.checked[id]);
+        const miss = sol.items.filter(id=>!state.checked[id]);
+        return `<li class="${done?"yes":""}"><span aria-hidden="true">${done?"✔":"○"}</span> <span><span class="tag ${sol.off?"off":"plus"}">${sol.off?"Officiel":"Alternative"}</span> ${sol.label}${sol.offNote?` <em>(${sol.offNote})</em>`:""}${sol.level==="partial"?' <em>(dépannage)</em>':""}${!done && miss.length<sol.items.length?`<br><small>Il manque : ${miss.map(itemName).join(", ")}</small>`:""}</span></li>`;
+      }).join("")}</ul>${n.tip?`<p class="note">${n.tip}</p>`:""}</article>`;
+  }).join("");
+  $("#needs-score").textContent = `${ok} besoin${ok>1?"s":""} couvert${ok>1?"s":""} sur ${list.length}`;
+}
+
+const LEVELS = [
+  {p:1,name:"Indispensables",tag:"Indispensable",c:"var(--red)",why:"À avoir en priorité. Sans eux, le sac ne vous permet pas de tenir 72 heures."},
+  {p:2,name:"Importants",tag:"Important",c:"var(--blue)",why:"Ils rendent ces trois jours plus sûrs. À ajouter dès que les indispensables sont réunis."},
+  {p:3,name:"Utiles",tag:"Utile",c:"var(--muted)",why:"Du confort et de l'autonomie en plus, quand le reste est prêt."}
+];
+
+const RESOURCES = [
+  {t:"Officiel", items:[
+    ["https://www.info.gouv.fr/risques/se-preparer-a-une-situation-durgence","Se préparer à une situation d'urgence","info.gouv.fr : la liste du kit, l'évacuation, le confinement"],
+    ["https://www.info.gouv.fr/upload/media/mixed/0001/16/b250783992e0c766ae97bce7cb6eb1e8f081fe33.pdf","Guide « Tous responsables » (PDF)","Le guide complet, version accessible"],
+    ["https://www.info.gouv.fr/upload/media/mixed/0001/16/0ff61ef4d6ef8145c41db79d523a1886fbd4f896.pdf","Guide en Facile à lire et à comprendre (PDF)","Version FALC"],
+    ["https://www.info.gouv.fr/upload/media/content/0001/05/7f65dbb18642830b679cf048b0de025a801d93d1.pdf","Infographie du kit d'urgence (PDF)","À imprimer et coller dans le placard"],
+    ["https://www.info.gouv.fr/actualite/tous-responsables-un-guide-pour-mieux-faire-face-aux-risques","Présentation du guide","Les réflexes et les sites officiels à connaître"],
+    ["https://www.ecologie.gouv.fr/dossiers/comprendre-risques-naturels-sen-proteger/preparer-son-kit-durgence-72-h","Préparer son kit d'urgence 72 h","Ministère de la Transition écologique"]
+  ]},
+  {t:"Connaître ses risques", items:[
+    ["https://www.georisques.gouv.fr/","Géorisques","Les risques naturels et industriels à votre adresse"],
+    ["https://vigilance.meteofrance.fr/fr","Vigilance Météo-France","Carte de vigilance mise à jour au moins deux fois par jour"],
+    ["https://www.vigicrues.gouv.fr/","Vigicrues","Risque de crue en temps réel"],
+    ["https://lannuaire.service-public.fr/navigation/prefecture","Trouver ma préfecture","Annuaire de l'administration"],
+    ["https://lannuaire.service-public.fr/navigation/mairie","Trouver ma mairie","Annuaire de l'administration"]
+  ]},
+  {t:"Vidéos : préparer le sac", items:[
+    ["https://www.youtube.com/watch?v=yD3a3ZHScHA","#PluieInondation : que mettre dans son kit 72 h ?","Format court, liste de matériel en description"],
+    ["https://www.youtube.com/watch?v=6oMWuMpugtM","Optimiser son kit d'urgence d'après le site du Gouvernement","Créateur indépendant"],
+    ["https://www.youtube.com/watch?v=gcl0iRrGLgE","Kit d'urgence : sac d'évacuation 72 h","Montage pas à pas d'un sac"],
+    ["https://www.youtube.com/watch?v=4-O6UYxVPRI","Le kit d'urgence du Gouvernement, analysé","Un avis critique : ce qui manque à la liste"],
+    ["https://www.youtube.com/watch?v=d0FGp1lVb58","Le sac d'évacuation lourd pour 72 h","Version très complète"],
+    ["https://www.youtube.com/watch?v=eOvaMSx2UG4","Test d'un sac d'urgence 72 h tout prêt","Contient un partenariat commercial"]
+  ]},
+  {t:"Vidéos : se débrouiller", items:[
+    ["https://m.youtube.com/watch?v=4qM887nC6jQ","Filtrer et purifier son eau","Pastilles, ébullition, filtres"],
+    ["https://www.youtube.com/watch?v=tCyxZLUmID0","Purifier l'eau avec des pastilles Aquatabs","Démonstration"],
+    ["https://www.youtube.com/watch?v=WISiwtxNWG0","Comment purifier de l'eau ?","Les techniques de survie comparées"],
+    ["https://www.croix-rouge.fr","Croix-Rouge française","Formations gratuites de 2 h aux gestes qui sauvent"]
+  ]}
+];
+
+const SERVICES = [["mairie","Mairie"],["prefecture","Préfecture"],["medecin","Médecin traitant"],["pharmacie","Pharmacie"],["hopital","Hôpital / urgences"],["assurance","Assurance habitation (n° de contrat)"],["ecole","École / crèche"],["veto","Vétérinaire"]];
+const RADIOS = [["ici (radio locale)","Radio de référence en crise, selon le Gouvernement"],["franceinfo","Information nationale en continu"],["France Inter","Flashs nationaux"],["Radio locale privée","Infos très locales"]];
+
+/* ---------- Stockage (navigateur uniquement) ---------- */
+const KEY = "sac72h:v1";
+let state = {checked:{}, exp:{}, house:{adults:2,kids:1,babies:0,pets:0}, docs:{contacts:[], services:{}, radios:{}, fields:{}}};
+try{ const s = JSON.parse(localStorage.getItem(KEY)||"null"); if(s) state = Object.assign(state, s); }catch(e){}
+let saveError = false;
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); saveError=false; }catch(e){ saveError=true; } renderSaveBar(); }
+try{ navigator.storage && navigator.storage.persist && navigator.storage.persist(); }catch(e){}
+
+// Fichiers : IndexedDB, avec repli en mémoire
+let files = [];
+let db = null;
+function idb(){ return new Promise(res=>{ try{ const r = indexedDB.open("sac72h",1); r.onupgradeneeded=()=>r.result.createObjectStore("files",{keyPath:"id"}); r.onsuccess=()=>{db=r.result;res(db)}; r.onerror=()=>res(null);}catch(e){res(null)} }); }
+function idbAll(){ return new Promise(res=>{ if(!db) return res([]); try{ const q=db.transaction("files").objectStore("files").getAll(); q.onsuccess=()=>res(q.result||[]); q.onerror=()=>res([]);}catch(e){res([])} }); }
+function idbPut(f){ try{ db && db.transaction("files","readwrite").objectStore("files").put(f);}catch(e){} }
+function idbReplaceAll(list){ return new Promise(res=>{ if(!db) return res(false); try{ const tx=db.transaction("files","readwrite"), st=tx.objectStore("files"); st.clear(); list.forEach(f=>st.put(f)); tx.oncomplete=()=>res(true); tx.onerror=tx.onabort=()=>res(false);}catch(e){res(false)} }); }
+function idbDel(id){ try{ db && db.transaction("files","readwrite").objectStore("files").delete(id);}catch(e){} }
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- Onglets ---------- */
+const tabs = [...document.querySelectorAll('[role=tab]')];
+function showTab(id){
+  tabs.forEach(t=>{ const on = t.getAttribute("aria-controls")===id; t.setAttribute("aria-selected",on); document.getElementById(t.getAttribute("aria-controls")).hidden=!on; });
+}
+tabs.forEach(t=>t.addEventListener("click",()=>{ showTab(t.getAttribute("aria-controls")); history.replaceState(null,"","#"+t.getAttribute("aria-controls")); }));
+if(["sac","docs","res"].includes(location.hash.slice(1))) showTab(location.hash.slice(1));
+
+/* ---------- Foyer ---------- */
+const H = ["adults","kids","babies","pets"];
+H.forEach(k=>{ const el=$("#h-"+k); el.value=state.house[k]; el.addEventListener("input",()=>{ state.house[k]=Math.max(0,+el.value||0); save(); renderCalc(); renderChecklist(); }); });
+function people(){ const h=state.house; return h.adults+h.kids+h.babies; }
+function renderCalc(){
+  const p = people(), h = state.house;
+  $("#calc").innerHTML = `Pour <b>${p}</b> personne${p>1?"s":""} : <b>${p*6} L</b> d'eau (6 L par personne), <b>${p*3}</b> rations journalières, <b>${p}</b> couverture${p>1?"s":""} de survie`+(h.pets?`, et de quoi nourrir <b>${h.pets}</b> animal${h.pets>1?"aux":""} 3 jours`:"")+`.`;
+}
+
+/* ---------- Checklist ---------- */
+let filter = "all";
+document.querySelectorAll(".chip[data-f]").forEach(b=>b.addEventListener("click",()=>{ filter=b.dataset.f; document.querySelectorAll(".chip[data-f]").forEach(x=>x.setAttribute("aria-pressed",x===b)); renderChecklist(); }));
+let view = state.view || "prio";
+document.querySelectorAll(".chip.view").forEach(b=>{ b.setAttribute("aria-pressed",b.dataset.v===view); b.addEventListener("click",()=>{ view=state.view=b.dataset.v; save(); document.querySelectorAll(".chip.view").forEach(x=>x.setAttribute("aria-pressed",x===b)); renderChecklist(); }); });
+function visibleItems(){ return ITEMS.filter(i=>!i.when || state.house[i.when]>0).sort((a,b)=>a.p-b.p); }
+function isLate(d){ if(!d) return false; const t=new Date(d); const soon=new Date(); soon.setMonth(soon.getMonth()+2); return t < soon; }
+const catName = id => CATS.find(c=>c.id===id).name;
+const lvl = p => LEVELS.find(l=>l.p===p);
+function keep(i){ return filter==="all" || (filter==="p1"&&i.p===1) || (filter==="todo"&&!state.checked[i.id]) || (filter==="off"&&i.off) || (filter==="exp"&&i.exp); }
+function itemHTML(i){
+  const d = state.exp[i.id]||"";
+  return `<div class="item ${state.checked[i.id]?"done":""}">
+    <input type="checkbox" id="ck-${i.id}" data-id="${i.id}" ${state.checked[i.id]?"checked":""}>
+    <div class="body">
+      <label class="name" for="ck-${i.id}">${esc(i.name)}</label>
+      ${i.note?`<span class="note">${esc(i.note)}</span>`:""}
+      <div class="meta">
+        ${view==="cat"?`<span class="lvl p${i.p}">${lvl(i.p).tag}</span>`:`<span class="theme">${catName(i.cat)}</span>`}
+        <span class="tag ${i.off?"off":"plus"}">${i.off?"Officiel":"Alternative"}</span>
+        ${i.q?`<a class="buy" href="${amazon(i.q)}" target="_blank" rel="noopener sponsored">Voir sur Amazon</a>`:""}
+        ${i.doc?`<a href="#docs" data-go="docs">Préparer le dossier</a>`:""}
+        ${i.exp?`<span class="exp ${isLate(d)?"late":""}"><label for="ex-${i.id}">Péremption</label><input type="date" id="ex-${i.id}" data-exp="${i.id}" value="${d}"></span>`:""}
+      </div>
+    </div></div>`;
+}
+function renderChecklist(){
+  const items = visibleItems();
+  const groups = view==="prio"
+    ? LEVELS.map(l=>({key:l.p, name:l.name, c:l.c, why:l.why, all:items.filter(i=>i.p===l.p), cls:"prio"}))
+    : CATS.map(c=>({key:c.id, name:c.name, c:c.c, all:items.filter(i=>i.cat===c.id), cls:""}));
+  $("#cats").innerHTML = groups.map(g=>{
+    const list = g.all.filter(keep);
+    if(!list.length) return "";
+    const done = g.all.filter(i=>state.checked[i.id]).length;
+    return `<section class="cat ${g.cls}" style="--c:${g.c}"><header><h3>${g.name}</h3><span class="count">${done}/${g.all.length}</span>${g.why?`<p>${g.why}</p>`:""}</header><div class="list">`+
+      list.map(itemHTML).join("")+`</div></section>`;
+  }).join("");
+  const done = items.filter(i=>state.checked[i.id]).length, p1 = items.filter(i=>i.p===1), p1Done = p1.filter(i=>state.checked[i.id]).length;
+  const pct = Math.round(100*done/items.length);
+  $("#pct").textContent = pct+" %";
+  $("#pct-detail").textContent = `${done}/${items.length} articles · indispensables ${p1Done}/${p1.length}`;
+  $("#bar-fill").style.width = pct+"%"; $("#bar").setAttribute("aria-valuenow",pct);
+  renderNeeds();
+}
+$("#cats").addEventListener("change",e=>{
+  if(e.target.dataset.id){ state.checked[e.target.dataset.id]=e.target.checked; save(); renderChecklist(); }
+  if(e.target.dataset.exp){ state.exp[e.target.dataset.exp]=e.target.value; save(); renderChecklist(); }
+});
+$("#cats").addEventListener("click",e=>{ const g=e.target.closest("[data-go]"); if(g){ e.preventDefault(); showTab(g.dataset.go); window.scrollTo(0,0);} });
+let resetArmed=false;
+$("#reset-check").addEventListener("click",e=>{
+  if(!resetArmed){ resetArmed=true; e.target.textContent="Confirmer : tout décocher"; setTimeout(()=>{resetArmed=false;e.target.textContent="Tout décocher"},4000); return; }
+  state.checked={}; save(); renderChecklist(); resetArmed=false; e.target.textContent="Tout décocher";
+});
+
+/* ---------- Documents ---------- */
+const F = ["family","home","meet","meet2","who","where","route1","route2","medical"];
+F.forEach(k=>{ const el=$("#d-"+k); el.value=state.docs.fields[k]||""; el.addEventListener("input",()=>{ state.docs.fields[k]=el.value; save(); }); });
+
+
+const SUGG = [
+  {g:"Famille",why:"Les premiers à prévenir, et souvent les premiers à vous chercher.",r:["Parent","Frère ou sœur","Enfant majeur","Grand-parent","Conjoint(e)"]},
+  {g:"Voisins",why:"Ils sont sur place quand la famille ne peut pas venir.",r:["Voisin de palier","Voisin qui a un double de vos clés","Gardien ou syndic"]},
+  {g:"Amis",why:"Un toit pour quelques nuits si le logement est inaccessible.",r:["Ami proche","Ami qui peut vous héberger"]},
+  {g:"Hors de votre région",why:"Les réseaux locaux saturent : un proche éloigné sert de relais pour que chacun donne des nouvelles.",r:["Contact relais dans une autre région"]},
+  {g:"Personnes à aider",why:"Le guide demande d'identifier les personnes vulnérables à qui porter secours.",r:["Personne âgée ou isolée du quartier","Proche en situation de handicap"]},
+  {g:"Enfants et travail",why:"Qui récupère les enfants, qui prévenir de votre absence.",r:["Nounou ou baby-sitter","Parent d'un camarade d'école","Employeur ou collègue"]}
+];
+function renderSugg(){
+  const have = new Set(state.docs.contacts.map(c=>(c.rel||"").trim()));
+  $("#sugg").innerHTML = SUGG.map(g=>`<div class="sugg-group"><span class="label">${g.g}</span><p>${g.why}</p>
+    <div class="sugg-chips">${g.r.map(r=>`<button class="chip ${have.has(r)?"added":""}" data-sugg="${esc(r)}">${have.has(r)?"✔ ":"+ "}${esc(r)}</button>`).join("")}</div></div>`).join("");
+}
+$("#sugg").addEventListener("click",e=>{
+  const r=e.target.closest("[data-sugg]"); if(!r) return;
+  const rel=r.dataset.sugg, c=state.docs.contacts;
+  const empty=c.findIndex(x=>!x.name&&!x.tel&&!x.rel);
+  if(empty>=0) c[empty].rel=rel; else c.push({rel});
+  save(); renderContacts();
+  const row=[...document.querySelectorAll("#contacts .row")].find(x=>x.querySelector('[data-k="rel"]').value===rel);
+  row && row.querySelector('[data-k="name"]').focus();
+});
+
+function renderContacts(){
+  if(!state.docs.contacts.length) state.docs.contacts=[{}];
+  $("#contacts").innerHTML = state.docs.contacts.map((c,i)=>`<div class="row" data-i="${i}">
+    <input id="c${i}-name" data-k="name" value="${esc(c.name)}" placeholder="Nom (ex. Jeanne Martin)" aria-label="Nom">
+    <input id="c${i}-rel" data-k="rel" value="${esc(c.rel)}" placeholder="Lien (ex. sœur)" aria-label="Lien">
+    <input id="c${i}-tel" data-k="tel" value="${esc(c.tel)}" placeholder="Téléphone" inputmode="tel" aria-label="Téléphone">
+    <input id="c${i}-addr" data-k="addr" value="${esc(c.addr)}" placeholder="Adresse" aria-label="Adresse">
+    <input id="c${i}-mail" data-k="mail" value="${esc(c.mail)}" placeholder="E-mail" aria-label="E-mail">
+    <button class="btn ghost del" data-del="${i}">Retirer</button></div>`).join("");
+  renderSugg();
+}
+$("#contacts").addEventListener("input",e=>{ const r=e.target.closest(".row"); state.docs.contacts[+r.dataset.i][e.target.dataset.k]=e.target.value; save(); if(e.target.dataset.k==="rel") renderSugg(); });
+$("#contacts").addEventListener("click",e=>{ if(e.target.dataset.del!=null){ state.docs.contacts.splice(+e.target.dataset.del,1); save(); renderContacts(); } });
+$("#add-contact").addEventListener("click",()=>{ state.docs.contacts.push({}); save(); renderContacts(); });
+
+$("#services").innerHTML = SERVICES.map(([k,n])=>{ const s=state.docs.services[k]||{}; return `<div class="svc"><b>${n}</b>
+  <input id="s-${k}-name" data-s="${k}" data-k="name" value="${esc(s.name)}" placeholder="Nom / adresse" aria-label="${n} nom et adresse">
+  <input id="s-${k}-tel" data-s="${k}" data-k="tel" value="${esc(s.tel)}" placeholder="Téléphone" inputmode="tel" aria-label="${n} téléphone"></div>`; }).join("");
+$("#services").addEventListener("input",e=>{ const k=e.target.dataset.s; state.docs.services[k]=state.docs.services[k]||{}; state.docs.services[k][e.target.dataset.k]=e.target.value; save(); });
+
+$("#radios").innerHTML = RADIOS.map(([n,w],i)=>`<tr><td><b>${n}</b></td><td><input id="r-${i}" class="freq" data-r="${n}" value="${esc(state.docs.radios[n])}" placeholder="ex. 103.1 FM" aria-label="Fréquence ${n}"></td><td class="note">${w}</td></tr>`).join("");
+$("#radios").addEventListener("input",e=>{ state.docs.radios[e.target.dataset.r]=e.target.value; save(); });
+
+const KINDS = ["Photo d'un proche","Pièce d'identité","Passeport","Carte Vitale","Ordonnance","Assurance","Livret de famille","Autre"];
+function renderFiles(){
+  $("#files").innerHTML = files.map(f=>`<div class="file">
+    <div class="thumb">${f.type.startsWith("image/")?`<img src="${f.data}" alt="${esc(f.name)}">`:`<span class="label">PDF</span>`}</div>
+    <span class="fname">${esc(f.name)}</span>
+    <select id="k-${f.id}" data-kind="${f.id}" aria-label="Type de document">${KINDS.map(k=>`<option ${k===f.kind?"selected":""}>${k}</option>`).join("")}</select>
+    <input id="l-${f.id}" data-label="${f.id}" value="${esc(f.label)}" placeholder="Qui ? (ex. Paul)" aria-label="Personne concernée">
+    <button class="btn ghost" data-rm="${f.id}">Retirer</button></div>`).join("");
+}
+function addFiles(list){
+  [...list].forEach(file=>{
+    if(file.size>15e6){ $("#doc-status").textContent=`${file.name} dépasse 15 Mo : réduisez-le avant de l'ajouter.`; return; }
+    const r=new FileReader();
+    r.onload=()=>{ const f={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:file.name,type:file.type||"application/octet-stream",data:r.result,kind:file.type.startsWith("image/")?"Photo d'un proche":"Autre",label:""}; files.push(f); idbPut(f); renderFiles(); renderSaveBar(); $("#doc-status").textContent=`${file.name} ajouté.`; };
+    r.readAsDataURL(file);
+  });
+}
+$("#file-in").addEventListener("change",e=>{ addFiles(e.target.files); e.target.value=""; });
+const drop=$("#drop");
+["dragenter","dragover"].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add("over")}));
+["dragleave","drop"].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove("over")}));
+drop.addEventListener("drop",e=>addFiles(e.dataTransfer.files));
+$("#files").addEventListener("change",e=>{ const f=files.find(x=>x.id===(e.target.dataset.kind)); if(f){f.kind=e.target.value; idbPut(f);} });
+$("#files").addEventListener("input",e=>{ const f=files.find(x=>x.id===(e.target.dataset.label)); if(f){f.label=e.target.value; idbPut(f);} });
+$("#files").addEventListener("click",e=>{ const id=e.target.dataset.rm; if(id){ files=files.filter(f=>f.id!==id); idbDel(id); renderFiles(); } });
+
+/* ---------- Dossier imprimable ---------- */
+function dossierHTML(){
+  const d=state.docs, fl=d.fields;
+  const row = (a,b)=> b?`<tr><th>${a}</th><td>${esc(b)}</td></tr>`:"";
+  let h = `<h1>Dossier d'urgence — ${esc(fl.family||"Mon foyer")}</h1>
+  <p>Mis à jour le ${new Date().toLocaleDateString("fr-FR")}. À ranger dans une pochette étanche, dans le sac 72 h.</p>
+  <h2>Numéros d'urgence</h2><p><b>15</b> Samu · <b>17</b> Police · <b>18</b> Pompiers · <b>112</b> Urgence européen · <b>114</b> SMS · <b>196</b> Mer · <b>191</b> Aéronautique</p>
+  <h2>Plan familial</h2><table>${row("Domicile",fl.home)}${row("Rassemblement proche",fl.meet)}${row("Rassemblement éloigné",fl.meet2)}${row("Qui fait quoi",fl.who)}${row("Emplacement du sac",fl.where)}${row("Itinéraire principal",fl.route1)}${row("Itinéraire de secours",fl.route2)}</table>
+  <h2>Proches</h2><table><tr><th>Nom</th><th>Lien</th><th>Téléphone</th><th>Adresse</th><th>E-mail</th></tr>${d.contacts.filter(c=>c.name||c.tel).map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.rel)}</td><td>${esc(c.tel)}</td><td>${esc(c.addr)}</td><td>${esc(c.mail)}</td></tr>`).join("")}</table>
+  <h2>Services publics et santé</h2><table>${SERVICES.map(([k,n])=>{const s=d.services[k]||{}; return (s.name||s.tel)?`<tr><th>${n}</th><td>${esc(s.name)}</td><td>${esc(s.tel)}</td></tr>`:"";}).join("")}</table>
+  <h2>Radios</h2><table>${RADIOS.map(([n])=>`<tr><th>${n}</th><td>${esc(d.radios[n]||"…")}</td></tr>`).join("")}</table>
+  ${fl.medical?`<h2>Informations médicales</h2><p style="white-space:pre-wrap">${esc(fl.medical)}</p>`:""}`;
+  const imgs=files.filter(f=>f.type.startsWith("image/")), pdfs=files.filter(f=>!f.type.startsWith("image/"));
+  if(pdfs.length) h+=`<h2>Documents PDF à imprimer séparément</h2><ul>${pdfs.map(f=>`<li>${esc(f.kind)} ${esc(f.label)} — ${esc(f.name)}</li>`).join("")}</ul>`;
+  imgs.forEach(f=>{ h+=`<div class="pimg pb"><h2>${esc(f.kind)}${f.label?" — "+esc(f.label):""}</h2><img src="${f.data}" alt=""></div>`; });
+  return h;
+}
+function checklistHTML(){
+  const p=people();
+  return `<h1>Checklist du sac 72 h</h1><p>Foyer de ${p} personne${p>1?"s":""} : ${p*6} L d'eau. Vérifier deux fois par an.</p>`+
+    LEVELS.map(l=>`<h2>${l.name}</h2>`+visibleItems().filter(i=>i.p===l.p).map(i=>`<div><span class="ck"></span>${state.checked[i.id]?"✔ ":""}${esc(i.name)}${state.exp[i.id]?" (péremption "+new Date(state.exp[i.id]).toLocaleDateString("fr-FR")+")":""}</div>`).join("")).join("");
+}
+function printNow(html){ $("#print-area").innerHTML=html; setTimeout(()=>window.print(),50); }
+$("#print-all").addEventListener("click",()=>printNow(dossierHTML()));
+$("#print-check").addEventListener("click",()=>printNow(checklistHTML()));
+
+function download(name,content,type){
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+}
+$("#export-usb").addEventListener("click",()=>{
+  const page=`<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dossier d'urgence</title><style>body{font-family:Arial,sans-serif;max-width:900px;margin:20px auto;padding:0 16px;line-height:1.5}table{border-collapse:collapse;width:100%}th,td{text-align:left;border-bottom:1px solid #999;padding:6px}img{max-width:100%}h1{border-bottom:4px solid #000}@media print{.pb{page-break-before:always}}</style>${dossierHTML()}</html>`;
+  download("dossier-urgence.html",page,"text/html"); $("#doc-status").textContent="Fichier « dossier-urgence.html » téléchargé : copiez-le sur la clé USB.";
+});
+/* ---------- Export / import complets ---------- */
+function hasData(){ return Object.values(state.checked).some(Boolean) || files.length || state.docs.contacts.some(c=>c.name||c.tel) || Object.values(state.docs.fields).some(Boolean); }
+function ago(iso){ const d=Math.floor((Date.now()-new Date(iso))/864e5); return d<=0?"aujourd'hui":d===1?"hier":`il y a ${d} jours`; }
+function renderSaveBar(){
+  const bar=$("#savebar"), msg=$("#save-msg"); if(!bar) return;
+  bar.classList.remove("warn","err");
+  if(saveError){ bar.classList.add("err"); msg.textContent="Ce navigateur refuse l'enregistrement (navigation privée ou stockage plein). Exportez vos données pour ne pas les perdre."; return; }
+  const last=state.lastExport;
+  if(!last){ if(hasData()) bar.classList.add("warn"); msg.textContent="Enregistré dans ce navigateur. Aucun export pour l'instant : exportez pour garder une copie."; }
+  else { const old=(Date.now()-new Date(last))>30*864e5; if(old) bar.classList.add("warn"); msg.textContent=`Enregistré dans ce navigateur. Dernier export ${ago(last)}${old?" : pensez à en refaire un.":"."}`; }
+}
+function exportAll(){
+  state.lastExport=new Date().toISOString();
+  const payload={app:"sac72h",version:1,exportedAt:state.lastExport,state,files};
+  download(`sac72h-sauvegarde-${state.lastExport.slice(0,10)}.json`,JSON.stringify(payload),"application/json");
+  save(); $("#doc-status").textContent="Sauvegarde exportée. Gardez ce fichier en lieu sûr : il contient vos documents.";
+}
+let pending=null;
+function readImport(file){
+  if(!file) return; const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const o=JSON.parse(r.result);
+      if(!o || typeof o.state!=="object" || (o.app && o.app!=="sac72h")) throw 0;
+      pending={state:o.state, files:Array.isArray(o.files)?o.files:[]};
+      const n=Object.values(o.state.checked||{}).filter(Boolean).length, c=(o.state.docs?.contacts||[]).filter(x=>x.name||x.tel).length;
+      $("#import-summary").innerHTML=`Sauvegarde ${o.exportedAt?"du "+new Date(o.exportedAt).toLocaleDateString("fr-FR"):""} : <b>${n}</b> articles cochés, <b>${c}</b> contacts, <b>${pending.files.length}</b> fichiers. Elle remplacera toutes les données de ce navigateur.`;
+      $("#import-confirm").hidden=false; $("#import-yes").focus();
+    }catch(err){ $("#save-msg").textContent="Ce fichier n'est pas une sauvegarde Sac 72 h. Choisissez le fichier .json créé par « Exporter tout »."; $("#savebar").classList.add("err"); }
+  };
+  r.readAsText(file);
+}
+async function applyImport(){
+  if(!pending) return;
+  const base={checked:{},exp:{},house:{adults:2,kids:1,babies:0,pets:0},docs:{contacts:[],services:{},radios:{},fields:{}}};
+  state=Object.assign(base,pending.state); state.docs=Object.assign(base.docs,pending.state.docs||{});
+  files=pending.files; pending=null;
+  save(); await idbReplaceAll(files);
+  location.reload();
+}
+$("#export-all").addEventListener("click",exportAll);
+$("#export-json").addEventListener("click",exportAll);
+["#import-all","#import-json"].forEach(sel=>$(sel).addEventListener("change",e=>{ readImport(e.target.files[0]); e.target.value=""; window.scrollTo(0,0); }));
+$("#import-yes").addEventListener("click",applyImport);
+$("#import-no").addEventListener("click",()=>{ pending=null; $("#import-confirm").hidden=true; renderSaveBar(); });
+
+/* ---------- Ressources ---------- */
+$("#res-list").innerHTML = RESOURCES.map(g=>`<div class="panel"><h3>${g.t}</h3><ul class="links">${g.items.map(([u,t,s])=>`<li><a href="${u}" target="_blank" rel="noopener">${t}</a><span>${s}</span></li>`).join("")}</ul></div>`).join("");
+
+/* ---------- Démarrage ---------- */
+renderCalc(); renderChecklist(); renderContacts(); renderFiles(); renderSaveBar();
+idb().then(idbAll).then(list=>{ if(list.length){ files=list; renderFiles(); renderSaveBar(); } });
+</script>
