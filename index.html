@@ -145,6 +145,18 @@ button.btn.ghost,label.btn.ghost{border-color:var(--line);font-weight:400;paddin
 .missing .mchips{display:flex;flex-wrap:wrap;gap:6px}
 .mchip{text-align:left;font-size:.88rem;border:1px solid var(--line);padding:3px 10px;border-radius:999px;background:var(--bg);color:var(--ink);cursor:pointer}
 .mchip.p1{border-color:var(--red)}
+.household.summary{justify-content:space-between;align-items:center}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px}
+.person{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--blue);padding:16px;display:grid;gap:12px;align-content:start}
+.pname{display:grid;gap:6px;font:600 1.15rem var(--f-display)}
+.pname input{font:700 1.4rem var(--f-display)}
+.q{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.q .qtext{min-width:0;font-size:.95rem}
+.q .qdetail{grid-column:1/-1}
+.q .qdetail.short{grid-column:auto;width:90px}
+.yn{display:inline-flex;border:1.5px solid var(--ink);border-radius:3px;overflow:hidden}
+.yn button{font:700 .9rem var(--f-body);border:0;background:var(--surface);color:var(--ink);padding:6px 12px;cursor:pointer}
+.yn button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .buy{font-weight:700;text-decoration:none}
 .buy::after{content:" ↗"}
 
@@ -230,7 +242,8 @@ footer .wrap{padding-block:20px}
       <div class="actions"><button class="btn primary" id="import-yes">Remplacer mes données</button><button class="btn ghost" id="import-no">Annuler</button></div>
     </div>
     <nav class="tabs" role="tablist">
-      <button role="tab" id="tab-sac" aria-controls="sac" aria-selected="true">Mon sac</button>
+      <button role="tab" id="tab-foyer" aria-controls="foyer" aria-selected="true">Mon foyer</button>
+      <button role="tab" id="tab-sac" aria-controls="sac" aria-selected="false">Mon sac</button>
       <button role="tab" id="tab-docs" aria-controls="docs" aria-selected="false">Mes documents</button>
       <button role="tab" id="tab-res" aria-controls="res" aria-selected="false">S'informer</button>
     </nav>
@@ -239,20 +252,34 @@ footer .wrap{padding-block:20px}
 
 <main>
 <!-- ============ MON SAC ============ -->
-<section id="sac" role="tabpanel" aria-labelledby="tab-sac">
+<section id="foyer" role="tabpanel" aria-labelledby="tab-foyer">
+  <div class="wrap">
+    <div class="lede">
+      <h2>Qui fait partie du foyer ?</h2>
+      <p>Commencez ici. Quelques questions sur chaque personne suffisent pour adapter le sac : des lunettes de secours pour qui en porte, un traitement pour qui en prend, une case par personne pour les vêtements.</p>
+    </div>
+    <div class="privacy"><b>Ces informations ne quittent jamais votre appareil.</b> Elles sont enregistrées uniquement dans ce navigateur. Aucun compte, aucun serveur : personne d'autre que vous n'y a accès, pas même l'auteur du site. Elles disparaissent si vous videz les données du navigateur, d'où le bouton « Exporter tout » en haut de page.</div>
+    <div class="household">
+      <label for="h-adults">Adultes<input id="h-adults" type="number" min="0" max="20" value="2"></label>
+      <label for="h-kids">Enfants<input id="h-kids" type="number" min="0" max="20" value="1"></label>
+      <label for="h-babies">Bébés<input id="h-babies" type="number" min="0" max="10" value="0"></label>
+      <label for="h-pets">Animaux<input id="h-pets" type="number" min="0" max="10" value="0"></label>
+    </div>
+    <div class="people" id="people"></div>
+    <div class="actions"><button class="btn primary" data-go="sac">Voir mon sac</button><span class="note">La checklist se met à jour à chaque réponse.</span></div>
+  </div>
+</section>
+
+<section id="sac" role="tabpanel" aria-labelledby="tab-sac" hidden>
   <div class="wrap">
     <div class="lede">
       <h2>La checklist du sac d'évacuation</h2>
       <p>Les articles sont rangés par ordre d'importance : commencez par les <b>indispensables</b>, puis complétez. Les articles marqués <span class="tag off">Officiel</span> viennent de la liste publiée sur info.gouv.fr. Ceux marqués <span class="tag plus">Alternative</span> sont des compléments ou des alternatives proposés par la Croix-Rouge, des secouristes ou des pratiquants, sans validation du Gouvernement. Cochez ce que vous avez déjà : votre progression reste enregistrée dans ce navigateur.</p>
     </div>
 
-    <div class="household">
-      <label for="h-adults">Adultes<input id="h-adults" type="number" min="0" max="20" value="2"></label>
-      <label for="h-kids">Enfants<input id="h-kids" type="number" min="0" max="20" value="1"></label>
-      <label for="h-babies">Bébés<input id="h-babies" type="number" min="0" max="10" value="0"></label>
-      <label for="h-pets">Animaux<input id="h-pets" type="number" min="0" max="10" value="0"></label>
+    <div class="household summary">
       <div class="calc" id="calc" aria-live="polite"></div>
-      <details class="names" id="names-box"><summary>Donner un prénom à chacun (facultatif)</summary><div class="names-grid" id="names"></div></details>
+      <button class="btn ghost" data-go="foyer">Modifier mon foyer</button>
     </div>
 
     <section class="missing" id="missing" aria-live="polite"></section>
@@ -320,9 +347,9 @@ footer .wrap{padding-block:20px}
     </div>
 
     <div class="panel">
-      <h3>Informations médicales</h3>
-      <p class="note">Une ligne par personne : groupe sanguin, allergies, traitements, médecin.</p>
-      <textarea id="d-medical" placeholder="Paul — groupe O+, allergie pénicilline, Lévothyrox 75 µg le matin"></textarea>
+      <h3>Autres informations médicales</h3>
+      <p class="note">Les traitements, allergies et groupes sanguins se remplissent dans l'onglet <a href="#foyer" data-golink="foyer">Mon foyer</a> et sont imprimés automatiquement. Ajoutez ici le reste : antécédents, médecins spécialistes, vaccinations.</p>
+      <textarea id="d-medical" placeholder="Bernard : pacemaker posé en 2022, cardiologue Dr Roux au CHU"></textarea>
     </div>
 
     <div class="panel">
@@ -410,7 +437,7 @@ const ITEMS = [
   {id:"eau",qty:n=>`${6*n} L au total, soit ${Math.ceil(6*n/1.5)} bouteilles de 1,5 L`,p:1,cat:"eau",off:1,exp:1,name:"Eau potable en bouteilles",note:"6 litres par personne (officiel). À acheter en grande surface, à faire tourner avec votre consommation."},
   {id:"nourriture",qty:n=>`${3*n} repas-journées (3 jours × ${n} personne${n>1?"s":""})`,p:1,cat:"eau",off:1,exp:1,name:"Nourriture non périssable sans cuisson",note:"Conserves à ouverture facile, barres, fruits secs.",q:"ration de survie 72h longue conservation"},
   {id:"bebe",qty:(n,h)=>`3 jours de repas pour ${h.babies} bébé${h.babies>1?"s":""}`,p:1,cat:"eau",off:1,exp:1,name:"Petits pots et lait pour bébé",note:"Si vous avez un bébé.",when:"babies"},
-  {id:"medicaments",p:1,cat:"soin",off:1,exp:1,name:"Médicaments personnels",note:"Traitements en cours pour plusieurs jours, avec ordonnance."},
+  {id:"medicaments",per:"q:meds",qty:()=>detailsFor("meds"),p:1,cat:"soin",off:1,exp:1,name:"Traitement personnel pour plusieurs jours, avec l'ordonnance",note:"Une case par personne qui suit un traitement (onglet Mon foyer)."},
   {id:"lampe",per:"adults",p:1,cat:"info",off:1,name:"Lampe frontale + piles de rechange",note:"Une par adulte. Elle éclaire en gardant les mains libres. Le guide demande une lampe et des piles.",q:"lampe frontale LED"},
   {id:"radio",p:1,cat:"info",off:1,name:"Radio à piles ou à dynamo + piles de rechange",note:"Pour suivre les consignes des autorités quand internet et le réseau tombent.",q:"radio dynamo solaire FM"},
   {id:"outils",p:1,cat:"outils",off:1,name:"Couteau multi-outils avec ouvre-boîte",note:"Lame, ciseaux, tournevis, ouvre-boîte dans un seul objet.",q:"couteau multi-outils pince"},
@@ -421,7 +448,13 @@ const ITEMS = [
   {id:"contacts",p:1,cat:"papiers",off:0,name:"Liste papier des numéros des proches",note:"Sans téléphone, on ne connaît plus aucun numéro.",doc:1},
   {id:"argent",qty:n=>`Repère courant : 50 à 100 € par personne, soit ${50*n} à ${100*n} €`,p:1,cat:"papiers",off:1,name:"Argent liquide",note:"Petites coupures : les distributeurs peuvent être hors service."},
   {id:"chargeur",p:1,cat:"info",off:1,name:"Chargeur de téléphone + batterie externe chargée",q:"batterie externe solaire"},
-  {id:"lunettes",p:1,cat:"soin",off:1,name:"Lunettes de vue de secours",note:"Si quelqu'un porte des lunettes."},
+  {id:"lunettes",per:"q:glasses",qty:()=>detailsFor("glasses"),p:1,cat:"soin",off:1,name:"Lunettes de vue de secours (ou lentilles et produit)",note:"Une ancienne paire fait l'affaire."},
+  {id:"allergie",per:"q:allergy",qty:()=>detailsFor("allergy"),p:1,cat:"soin",off:0,exp:1,name:"Traitement d'urgence contre l'allergie, s'il a été prescrit",note:"Par exemple un stylo d'adrénaline. Vérifiez sa date de péremption."},
+  {id:"appareil",per:"q:device",qty:()=>detailsFor("device"),p:1,cat:"soin",off:0,name:"Appareil ou aide + piles ou chargeur de rechange",note:"Appareil auditif, respiratoire, canne pliante…"},
+  {id:"regime",per:"q:diet",qty:()=>detailsFor("diet"),p:1,cat:"eau",off:0,exp:1,name:"Nourriture adaptée au régime",note:"La nourriture générique du sac ne lui convient pas forcément."},
+  {id:"couches",per:"q:diapers",p:1,cat:"soin",off:0,name:"Couches ou protections pour 3 jours",note:"Avec lingettes et sacs pour les jeter."},
+  {id:"evac_aide",per:"q:mobility",qty:()=>detailsFor("mobility"),p:1,cat:"papiers",off:0,name:"Évacuation prévue avec une personne qui aide",note:"Qui vient l'aider, comment, et par où. Notez-le dans le plan familial.",doc:1},
+  {id:"doudou",per:"q:comfort",qty:()=>detailsFor("comfort"),p:3,cat:"outils",off:0,name:"Doudou ou objet rassurant",note:"Un objet familier aide beaucoup un enfant déplacé en urgence."},
   {id:"animaux",qty:(n,h)=>`3 jours de nourriture pour ${h.pets} animal${h.pets>1?"aux":""}`,p:1,cat:"eau",off:1,exp:1,name:"Nourriture pour animaux",note:"Et une laisse ou une caisse de transport.",when:"pets"},
 
   // 2 — Importants : ils rendent les 72 h nettement plus sûres
@@ -586,30 +619,77 @@ const tabs = [...document.querySelectorAll('[role=tab]')];
 function showTab(id){
   tabs.forEach(t=>{ const on = t.getAttribute("aria-controls")===id; t.setAttribute("aria-selected",on); document.getElementById(t.getAttribute("aria-controls")).hidden=!on; });
 }
+document.addEventListener("click",e=>{ const g=e.target.closest("button[data-go],a[data-golink]"); if(g){ e.preventDefault(); const id=g.dataset.go||g.dataset.golink; showTab(id); history.replaceState(null,"","#"+id); window.scrollTo(0,0); } });
 tabs.forEach(t=>t.addEventListener("click",()=>{ showTab(t.getAttribute("aria-controls")); history.replaceState(null,"","#"+t.getAttribute("aria-controls")); }));
-if(["sac","docs","res"].includes(location.hash.slice(1))) showTab(location.hash.slice(1));
+if(["foyer","sac","docs","res"].includes(location.hash.slice(1))) showTab(location.hash.slice(1));
 
 /* ---------- Foyer ---------- */
 const H = ["adults","kids","babies","pets"];
-H.forEach(k=>{ const el=$("#h-"+k); el.value=state.house[k]; el.addEventListener("input",()=>{ state.house[k]=Math.max(0,+el.value||0); save(); renderCalc(); renderNames(); renderChecklist(); }); });
+H.forEach(k=>{ const el=$("#h-"+k); el.value=state.house[k]; el.addEventListener("input",()=>{ state.house[k]=Math.max(0,+el.value||0); save(); renderCalc(); renderPeople(); renderChecklist(); }); });
 function people(){ const h=state.house; return h.adults+h.kids+h.babies; }
 function personList(){
   const h=state.house, out=[], names=h.names||{};
   [["A","adults","Adulte"],["E","kids","Enfant"],["B","babies","Bébé"]].forEach(([p,k,l])=>{ for(let i=1;i<=h[k];i++){ const key=p+i; out.push({k:key,type:k,label:(names[key]||"").trim()||`${l} ${i}`}); } });
   return out;
 }
-function subsOf(i){ if(!i.per) return null; const all=personList(); return i.per==="adults"?all.filter(p=>p.type==="adults"):all; }
+function subsOf(i){ if(!i.per) return null; const all=personList();
+  if(i.per==="adults") return all.filter(p=>p.type==="adults");
+  if(i.per.startsWith("q:")) return all.filter(p=>answer(p,i.per.slice(2)));
+  return all; }
 function itemCount(i){ const subs=subsOf(i); if(!subs) return [state.checked[i.id]?1:0,1]; return [subs.filter(p=>state.checked[i.id+"#"+p.k]).length, subs.length]; }
 function itemDone(i){ const [d,t]=itemCount(i); return t>0 && d===t; }
-function doneById(id){ const i=ITEMS.find(x=>x.id===id); return i?itemDone(i):!!state.checked[id]; }
-function renderNames(){
-  const old=state.house.names||{};
-  $("#names").innerHTML=personList().map(p=>`<label for="nm-${p.k}">${{adults:"Adulte",kids:"Enfant",babies:"Bébé"}[p.type]} ${p.k.slice(1)}<input id="nm-${p.k}" data-name="${p.k}" value="${esc(old[p.k]||"")}" placeholder="Prénom"></label>`).join("");
+function doneById(id){ const i=ITEMS.find(x=>x.id===id); if(!i) return !!state.checked[id]; if(i.per && !subsOf(i).length) return true; return itemDone(i); }
+
+/* Questions posées pour chaque personne. "for" limite la question à certains profils.
+   Une réponse oui fait apparaître l'article lié (champ per:"q:<clé>") avec une case pour cette personne. */
+const QUESTIONS = [
+  {k:"glasses", q:n=>`Est-ce que ${n} porte des lunettes de vue ou des lentilles ?`, detail:"Correction, ou type de lentilles"},
+  {k:"meds", q:n=>`Est-ce que ${n} prend un traitement régulier ?`, detail:"Médicaments et doses, ex. Lévothyrox 75 µg le matin"},
+  {k:"allergy", q:n=>`Est-ce que ${n} a une allergie grave ?`, detail:"À quoi ? Traitement d'urgence prescrit ?"},
+  {k:"device", q:n=>`Est-ce que ${n} utilise un appareil ou une aide (auditif, respiratoire, fauteuil, canne) ?`, detail:"Lequel, et ce qu'il lui faut (piles, chargeur)"},
+  {k:"diet", q:n=>`Est-ce que ${n} suit un régime alimentaire particulier ?`, detail:"Sans gluten, diabète, allergie alimentaire…"},
+  {k:"diapers", q:n=>`Est-ce que ${n} porte des couches ou des protections ?`, def:{babies:true}},
+  {k:"mobility", q:n=>`Est-ce que ${n} a besoin d'aide pour se déplacer ou pour évacuer ?`, detail:"Qui l'aide, comment"},
+  {k:"comfort", q:n=>`Est-ce que ${n} a un doudou ou un objet qui le rassure ?`, for:["kids","babies"], detail:"Lequel"}
+];
+function info(k){ state.house.info=state.house.info||{}; return state.house.info[k]=state.house.info[k]||{}; }
+function answer(p,key){ const v=(state.house.info||{})[p.k]?.[key]; if(v===undefined){ const q=QUESTIONS.find(x=>x.k===key); return !!(q&&q.def&&q.def[p.type]); } return !!v; }
+function whoOf(p){ const nm=((state.house.names||{})[p.k]||"").trim(); return nm || ({adults:"l'adulte",kids:"l'enfant",babies:"le bébé"}[p.type]+" "+p.k.slice(1)); }
+function qsFor(p){ return QUESTIONS.filter(q=>!q.for||q.for.includes(p.type)); }
+function renderPeople(){
+  const list=personList();
+  if(!list.length){ $("#people").innerHTML=`<p class="note">Indiquez au moins une personne ci-dessus.</p>`; return; }
+  $("#people").innerHTML=list.map(p=>{
+    const inf=(state.house.info||{})[p.k]||{}, base={adults:"l'adulte",kids:"l'enfant",babies:"le bébé"}[p.type], num=p.k.slice(1);
+    const nm=(state.house.names||{})[p.k]||"";
+    return `<article class="person" data-p="${p.k}">
+      <label class="pname" for="nm-${p.k}">Comment s'appelle ${base} ${num} ?<input id="nm-${p.k}" data-name="${p.k}" value="${esc(nm)}" placeholder="Prénom" autocomplete="off"></label>
+      <div class="qs">${qsFor(p).map(q=>{ const yes=answer(p,q.k);
+        return `<div class="q"><span class="qtext">${esc(q.q(whoOf(p)))}</span>
+          <span class="yn" role="group" aria-label="${esc(q.q(whoOf(p)))}"><button type="button" data-ans="${q.k}" data-v="1" aria-pressed="${yes}">Oui</button><button type="button" data-ans="${q.k}" data-v="0" aria-pressed="${!yes}">Non</button></span>
+          ${q.detail&&yes?`<input id="qd-${p.k}-${q.k}" class="qdetail" data-detail="${q.k}" value="${esc(inf[q.k+"_d"]||"")}" placeholder="${esc(q.detail)}" aria-label="${esc(q.detail)}">`:""}</div>`; }).join("")}
+        <div class="q"><label class="qtext" for="qb-${p.k}">Groupe sanguin, s'il est connu</label><input id="qb-${p.k}" class="qdetail short" data-detail="blood" value="${esc(inf.blood_d||"")}" placeholder="ex. O+"></div>
+      </div></article>`;
+  }).join("");
 }
-$("#names").addEventListener("input",e=>{ const k=e.target.dataset.name; if(!k) return; state.house.names=state.house.names||{}; state.house.names[k]=e.target.value; save(); renderChecklist(); });
+$("#people").addEventListener("click",e=>{
+  const b=e.target.closest("[data-ans]"); if(!b) return;
+  const k=b.closest(".person").dataset.p; info(k)[b.dataset.ans]=b.dataset.v==="1"; save(); renderPeople(); renderCalc(); renderChecklist();
+  const again=document.querySelector(`.person[data-p="${k}"] [data-ans="${b.dataset.ans}"][data-v="${b.dataset.v}"]`); again&&again.focus();
+});
+$("#people").addEventListener("input",e=>{
+  const card=e.target.closest(".person"); if(!card) return; const k=card.dataset.p;
+  if(e.target.dataset.name){ state.house.names=state.house.names||{}; state.house.names[k]=e.target.value; save(); renderCalc(); renderChecklist();
+    const p=personList().find(x=>x.k===k); card.querySelectorAll(".q .qtext").forEach((el,i)=>{ const q=qsFor(p)[i]; if(q) el.textContent=q.q(whoOf(p)); }); }
+  if(e.target.dataset.detail){ info(k)[e.target.dataset.detail+"_d"]=e.target.value; save(); renderChecklist(); }
+});
+function detailsFor(key){ return personList().filter(p=>answer(p,key)).map(p=>{ const d=((state.house.info||{})[p.k]||{})[key+"_d"]; return d?`${p.label} : ${d}`:null; }).filter(Boolean).join(" · "); }
+
+function renderNames(){ renderPeople(); }
 function renderCalc(){
   const p = people(), h = state.house;
-  $("#calc").innerHTML = `Pour <b>${p}</b> personne${p>1?"s":""} : <b>${p*6} L</b> d'eau (6 L par personne), <b>${p*3}</b> rations journalières, <b>${p}</b> couverture${p>1?"s":""} de survie`+(h.pets?`, et de quoi nourrir <b>${h.pets}</b> animal${h.pets>1?"aux":""} 3 jours`:"")+`.`;
+  const names=personList().map(x=>x.label).join(", ");
+  $("#calc").innerHTML = `<b>Foyer : ${esc(names)||"personne"}</b>${h.pets?` et ${h.pets} animal${h.pets>1?"aux":""}`:""}<br>Pour <b>${p}</b> personne${p>1?"s":""} : <b>${p*6} L</b> d'eau (6 L par personne), <b>${p*3}</b> rations journalières, <b>${p}</b> couverture${p>1?"s":""} de survie`+(h.pets?`, et de quoi nourrir <b>${h.pets}</b> animal${h.pets>1?"aux":""} 3 jours`:"")+`.`;
 }
 
 /* ---------- Checklist ---------- */
@@ -785,7 +865,8 @@ function dossierHTML(){
   <h2>Proches</h2><table><tr><th>Nom</th><th>Lien</th><th>Téléphone</th><th>Adresse</th><th>E-mail</th></tr>${d.contacts.filter(c=>c.name||c.tel).map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.rel)}</td><td>${esc(c.tel)}</td><td>${esc(c.addr)}</td><td>${esc(c.mail)}</td></tr>`).join("")}</table>
   <h2>Services publics et santé</h2><table>${SERVICES.map(([k,n])=>{const s=d.services[k]||{}; return (s.name||s.tel)?`<tr><th>${n}</th><td>${esc(s.name)}</td><td>${esc(s.tel)}</td></tr>`:"";}).join("")}</table>
   <h2>Radios</h2><table>${RADIOS.map(([n])=>`<tr><th>${n}</th><td>${esc(d.radios[n]||"…")}</td></tr>`).join("")}</table>
-  ${fl.medical?`<h2>Informations médicales</h2><p style="white-space:pre-wrap">${esc(fl.medical)}</p>`:""}`;
+  <h2>Membres du foyer</h2><table><tr><th>Nom</th><th>Groupe</th><th>Traitement</th><th>Allergie</th><th>Appareil, aide</th><th>Régime</th></tr>${personList().map(p=>{ const inf=(state.house.info||{})[p.k]||{}; const v=k=>answer(p,k)?esc(inf[k+"_d"]||"oui"):""; return `<tr><td>${esc(p.label)}</td><td>${esc(inf.blood_d||"")}</td><td>${v("meds")}</td><td>${v("allergy")}</td><td>${[v("device"),v("mobility")].filter(Boolean).join(" ; ")}</td><td>${v("diet")}</td></tr>`; }).join("")}</table>
+  ${fl.medical?`<h2>Autres informations médicales</h2><p style="white-space:pre-wrap">${esc(fl.medical)}</p>`:""}`;
   const imgs=files.filter(f=>f.type.startsWith("image/")), pdfs=files.filter(f=>!f.type.startsWith("image/"));
   if(pdfs.length) h+=`<h2>Documents PDF à imprimer séparément</h2><ul>${pdfs.map(f=>`<li>${esc(f.kind)} ${esc(f.label)} — ${esc(f.name)}</li>`).join("")}</ul>`;
   imgs.forEach(f=>{ h+=`<div class="pimg pb"><h2>${esc(f.kind)}${f.label?" — "+esc(f.label):""}</h2><img src="${f.data}" alt=""></div>`; });
