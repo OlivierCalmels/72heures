@@ -8,7 +8,8 @@ Un site d'une seule page pour aider chaque foyer à constituer son sac d'évacua
 
 - **Checklist** classée par importance (indispensable, important, utile), avec la distinction entre la liste officielle et les alternatives.
 - **Bilan des besoins vitaux** : boire, manger, avoir chaud, faire du feu, s'orienter… Chaque besoin peut être couvert de plusieurs façons, et le site indique s'il est couvert, partiel ou manquant.
-- **Calcul selon le foyer** : eau, couvertures, articles bébé et animaux.
+- **Calcul selon le foyer** : les quantités (eau, nourriture, argent, masques…) suivent le nombre de personnes, et les articles individuels (vêtements, couvertures, lampes, sifflets…) ont une case par personne, avec prénoms facultatifs.
+- **Résumé « Il vous manque »** en haut de la liste : ce qui manque, par niveau d'importance et par personne.
 - **Dossier de documents** : plan familial, itinéraires d'évacuation, proches (avec suggestions), services publics, radios, numéros d'urgence, photos et scans.
 - **Impression d'un bloc** du dossier et de la checklist.
 - **Export pour clé USB** : une page HTML autonome qui s'ouvre sans connexion.

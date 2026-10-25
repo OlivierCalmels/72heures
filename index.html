@@ -124,6 +124,27 @@ button.btn.ghost,label.btn.ghost{border-color:var(--line);font-weight:400;paddin
 .btn.small{padding:5px 12px;font-size:.9rem;cursor:pointer}
 .confirm{border:2px solid var(--signal);background:var(--surface);padding:12px 14px;display:grid;gap:8px}
 .confirm p{margin:0}
+.names{flex-basis:100%;font-size:.9rem}
+.names summary{cursor:pointer;color:var(--blue)}
+.names-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:8px}
+.names-grid label{display:grid;gap:2px;font-size:.82rem;color:var(--muted)}
+.persons{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.pc{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--red);border-radius:999px;padding:3px 10px 3px 6px;font-size:.88rem;cursor:pointer;background:var(--surface)}
+.pc input{width:16px;height:16px;margin:0;accent-color:var(--ok)}
+.pc.on{border-color:var(--ok);color:var(--muted)}
+.qty{font-weight:700;font-variant-numeric:tabular-nums}
+.item.todo{box-shadow:inset 4px 0 0 var(--red)}
+.item.partial{box-shadow:inset 4px 0 0 var(--signal)}
+.state{font:700 .75rem var(--f-display);text-transform:uppercase;letter-spacing:.06em}
+.state.todo{color:var(--red)} .state.partial{color:var(--blue)}
+.missing{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--red);padding:14px 16px;display:grid;gap:10px}
+.missing.ok{border-left-color:var(--ok)}
+.missing h3{font-size:1.5rem}
+.missing .mrow{display:grid;gap:6px}
+.missing summary{cursor:pointer}
+.missing .mchips{display:flex;flex-wrap:wrap;gap:6px}
+.mchip{text-align:left;font-size:.88rem;border:1px solid var(--line);padding:3px 10px;border-radius:999px;background:var(--bg);color:var(--ink);cursor:pointer}
+.mchip.p1{border-color:var(--red)}
 .buy{font-weight:700;text-decoration:none}
 .buy::after{content:" ↗"}
 
@@ -231,7 +252,10 @@ footer .wrap{padding-block:20px}
       <label for="h-babies">Bébés<input id="h-babies" type="number" min="0" max="10" value="0"></label>
       <label for="h-pets">Animaux<input id="h-pets" type="number" min="0" max="10" value="0"></label>
       <div class="calc" id="calc" aria-live="polite"></div>
+      <details class="names" id="names-box"><summary>Donner un prénom à chacun (facultatif)</summary><div class="names-grid" id="names"></div></details>
     </div>
+
+    <section class="missing" id="missing" aria-live="polite"></section>
 
     <section class="needs-wrap" aria-labelledby="needs-title">
       <div class="needs-head"><h3 id="needs-title">Vos besoins vitaux</h3><span class="big" id="needs-score"></span></div>
@@ -383,44 +407,44 @@ const CATS = [
 // off = liste officielle info.gouv.fr ; exp = a une date de péremption
 const ITEMS = [
   // 1 — Indispensables : sans eux, le sac ne remplit pas sa fonction
-  {id:"eau",p:1,cat:"eau",off:1,exp:1,name:"Eau potable en bouteilles",note:"6 litres par personne (officiel).",q:"pack eau minérale longue conservation"},
-  {id:"nourriture",p:1,cat:"eau",off:1,exp:1,name:"Nourriture non périssable sans cuisson",note:"Conserves à ouverture facile, barres, fruits secs.",q:"ration de survie 72h longue conservation"},
-  {id:"bebe",p:1,cat:"eau",off:1,exp:1,name:"Petits pots et lait pour bébé",note:"Si vous avez un bébé.",q:"petits pots bébé longue conservation",when:"babies"},
-  {id:"medicaments",p:1,cat:"soin",off:1,exp:1,name:"Médicaments personnels",note:"Traitements en cours pour plusieurs jours, avec ordonnance.",q:"pilulier semainier"},
-  {id:"lampe",p:1,cat:"info",off:1,name:"Lampe frontale + piles de rechange",note:"Elle éclaire en gardant les mains libres. Le guide demande une lampe et des piles.",q:"lampe frontale LED"},
+  {id:"eau",qty:n=>`${6*n} L au total, soit ${Math.ceil(6*n/1.5)} bouteilles de 1,5 L`,p:1,cat:"eau",off:1,exp:1,name:"Eau potable en bouteilles",note:"6 litres par personne (officiel). À acheter en grande surface, à faire tourner avec votre consommation."},
+  {id:"nourriture",qty:n=>`${3*n} repas-journées (3 jours × ${n} personne${n>1?"s":""})`,p:1,cat:"eau",off:1,exp:1,name:"Nourriture non périssable sans cuisson",note:"Conserves à ouverture facile, barres, fruits secs.",q:"ration de survie 72h longue conservation"},
+  {id:"bebe",qty:(n,h)=>`3 jours de repas pour ${h.babies} bébé${h.babies>1?"s":""}`,p:1,cat:"eau",off:1,exp:1,name:"Petits pots et lait pour bébé",note:"Si vous avez un bébé.",when:"babies"},
+  {id:"medicaments",p:1,cat:"soin",off:1,exp:1,name:"Médicaments personnels",note:"Traitements en cours pour plusieurs jours, avec ordonnance."},
+  {id:"lampe",per:"adults",p:1,cat:"info",off:1,name:"Lampe frontale + piles de rechange",note:"Une par adulte. Elle éclaire en gardant les mains libres. Le guide demande une lampe et des piles.",q:"lampe frontale LED"},
   {id:"radio",p:1,cat:"info",off:1,name:"Radio à piles ou à dynamo + piles de rechange",note:"Pour suivre les consignes des autorités quand internet et le réseau tombent.",q:"radio dynamo solaire FM"},
   {id:"outils",p:1,cat:"outils",off:1,name:"Couteau multi-outils avec ouvre-boîte",note:"Lame, ciseaux, tournevis, ouvre-boîte dans un seul objet.",q:"couteau multi-outils pince"},
   {id:"trousse",p:1,cat:"soin",off:1,exp:1,name:"Trousse de premiers secours",note:"Alcool, pansements, compresses.",q:"trousse de secours complète"},
-  {id:"couverture",p:1,cat:"chaud",off:1,name:"Couverture de survie",note:"Une par personne.",q:"couverture de survie lot"},
-  {id:"vetements",p:1,cat:"chaud",off:1,name:"Vêtements chauds",note:"Un change complet par personne, chaussettes, bonnet.",q:"veste polaire compressible"},
+  {id:"couverture",per:"all",p:1,cat:"chaud",off:1,name:"Couverture de survie",note:"Une par personne.",q:"couverture de survie lot"},
+  {id:"vetements",per:"all",p:1,cat:"chaud",off:1,name:"Vêtements chauds",note:"Un change complet : pull ou polaire, sous-vêtements, chaussettes, bonnet. Cochez chaque personne dont le change est dans le sac."},
   {id:"photocopies",p:1,cat:"papiers",off:1,name:"Photocopies des documents essentiels",note:"Pièces d'identité, ordonnances, en pochette étanche. Préparez-les dans l'onglet « Mes documents ».",q:"pochette étanche documents A4",doc:1},
   {id:"contacts",p:1,cat:"papiers",off:0,name:"Liste papier des numéros des proches",note:"Sans téléphone, on ne connaît plus aucun numéro.",doc:1},
-  {id:"argent",p:1,cat:"papiers",off:1,name:"Argent liquide",note:"Petites coupures : les distributeurs peuvent être hors service."},
+  {id:"argent",qty:n=>`Repère courant : 50 à 100 € par personne, soit ${50*n} à ${100*n} €`,p:1,cat:"papiers",off:1,name:"Argent liquide",note:"Petites coupures : les distributeurs peuvent être hors service."},
   {id:"chargeur",p:1,cat:"info",off:1,name:"Chargeur de téléphone + batterie externe chargée",q:"batterie externe solaire"},
-  {id:"lunettes",p:1,cat:"soin",off:1,name:"Lunettes de vue de secours",note:"Si quelqu'un porte des lunettes.",q:"étui lunettes rigide"},
-  {id:"animaux",p:1,cat:"eau",off:1,exp:1,name:"Nourriture pour animaux",note:"Et une laisse ou une caisse de transport.",q:"croquettes sachet voyage",when:"pets"},
+  {id:"lunettes",p:1,cat:"soin",off:1,name:"Lunettes de vue de secours",note:"Si quelqu'un porte des lunettes."},
+  {id:"animaux",qty:(n,h)=>`3 jours de nourriture pour ${h.pets} animal${h.pets>1?"aux":""}`,p:1,cat:"eau",off:1,exp:1,name:"Nourriture pour animaux",note:"Et une laisse ou une caisse de transport.",when:"pets"},
 
   // 2 — Importants : ils rendent les 72 h nettement plus sûres
-  {id:"cles",p:2,cat:"papiers",off:1,name:"Double des clés maison et voiture",q:"porte-clés mousqueton"},
+  {id:"cles",p:2,cat:"papiers",off:1,name:"Double des clés maison et voiture"},
   {id:"briquet",p:2,cat:"info",off:1,name:"Briquet",note:"Le guide demande un briquet ou des allumettes.",q:"briquet tempête rechargeable"},
   {id:"allumettes",p:2,cat:"info",off:1,name:"Allumettes (idéalement tempête, en boîte étanche)",q:"allumettes tempête étanches"},
   {id:"bougies",p:2,cat:"info",off:1,name:"Bougies",q:"bougies longue durée"},
   {id:"firesteel",p:3,cat:"info",off:0,name:"Pierre à feu (firesteel)",note:"Fonctionne mouillée, des milliers d'allumages. S'utilise avec le dos du couteau.",q:"pierre à feu ferrocérium"},
   {id:"filtre",p:2,cat:"eau",off:0,name:"Filtre à membrane (type Sawyer, LifeStraw)",note:"Rend potable l'eau douce trouvée sur place. Retient bactéries et parasites, pas les produits chimiques.",q:"filtre à eau membrane survie"},
-  {id:"pastilles",p:2,cat:"eau",off:1,exp:1,name:"Pastilles de purification (Micropur, Aquatabs)",note:"Le guide les cite en dernier recours. Compter 30 min à 2 h d'attente selon le produit.",q:"pastilles purification eau Micropur"},
+  {id:"pastilles",qty:n=>`De quoi traiter au moins ${6*n} L`,p:2,cat:"eau",off:1,exp:1,name:"Pastilles de purification (Micropur, Aquatabs)",note:"Le guide les cite en dernier recours. Compter 30 min à 2 h d'attente selon le produit.",q:"pastilles purification eau Micropur"},
   {id:"contenant",p:2,cat:"eau",off:0,name:"Gourde ou poche à eau pliable",note:"Indispensable pour utiliser un filtre ou des pastilles.",q:"poche à eau pliable 10L"},
-  {id:"sac",p:2,cat:"chaud",off:0,name:"Sac à dos étanche",note:"Le contenant de tout le kit. 35 à 45 L par adulte.",q:"sac à dos étanche 40L"},
+  {id:"sac",per:"adults",p:2,cat:"chaud",off:0,name:"Sac à dos étanche",note:"Un par adulte, 35 à 45 L. Les enfants peuvent porter un petit sac avec leur change.",q:"sac à dos étanche 40L"},
   {id:"carte_locale",p:2,cat:"orient",off:0,name:"Carte détaillée de votre secteur (1:25 000 ou plan de ville)",note:"La plus utile. Type carte IGN TOP 25 en zone rurale, plan de ville en zone urbaine. Surlignez vos itinéraires d'évacuation, vos points de rassemblement, la mairie et l'hôpital.",q:"carte IGN TOP 25"},
   {id:"boussole",p:2,cat:"orient",off:0,name:"Boussole à plaque",note:"Sert avec la carte détaillée quand les panneaux ou le GPS manquent. Apprenez à l'utiliser avant d'en avoir besoin.",q:"boussole à plaque randonnée"},
   {id:"carte_route",p:2,cat:"orient",off:0,name:"Carte routière de votre département ou région (1:150 000 à 1:250 000)",note:"Pour rejoindre en voiture votre point de rassemblement éloigné ou votre contact relais, et trouver un itinéraire bis si une route est coupée.",q:"carte routière départementale Michelin"},
   {id:"carte_france",p:3,cat:"orient",off:0,name:"Carte de France des grands axes (1:1 000 000)",note:"Seulement si votre contact relais habite loin. Un atlas routier fait aussi l'affaire.",q:"carte routière France grands axes"},
   {id:"pochette_carte",p:3,cat:"orient",off:0,name:"Pochette étanche pour cartes + surligneur",q:"porte-carte étanche"},
-  {id:"sifflet",p:2,cat:"info",off:0,name:"Sifflet",note:"Pour se signaler sans s'épuiser.",q:"sifflet de survie"},
-  {id:"hygiene",p:2,cat:"soin",off:0,exp:1,name:"Hygiène : gel hydroalcoolique, savon, papier toilette, protections",q:"kit hygiène voyage"},
-  {id:"pluie",p:2,cat:"chaud",off:0,name:"Poncho de pluie",q:"poncho pluie réutilisable"},
+  {id:"sifflet",per:"all",p:2,cat:"info",off:0,name:"Sifflet",note:"Pour se signaler sans s'épuiser.",q:"sifflet de survie"},
+  {id:"hygiene",qty:n=>`Pour ${n} personne${n>1?"s":""} pendant 3 jours`,p:2,cat:"soin",off:0,exp:1,name:"Hygiène : gel hydroalcoolique, savon, papier toilette, protections",q:"kit hygiène voyage"},
+  {id:"pluie",per:"all",p:2,cat:"chaud",off:0,name:"Poncho de pluie",q:"poncho pluie réutilisable"},
   {id:"adhesif",p:2,cat:"outils",off:0,name:"Ruban adhésif large",note:"Le guide le cite pour calfeutrer portes et fenêtres en cas de confinement.",q:"ruban adhésif toilé"},
   {id:"usb",p:2,cat:"papiers",off:0,name:"Clé USB avec le dossier numérique",note:"De préférence chiffrée.",q:"clé USB chiffrée",doc:1},
-  {id:"masques",p:2,cat:"soin",off:0,name:"Masques FFP2",q:"masques FFP2"},
+  {id:"masques",qty:n=>`${2*3*n} masques (2 par jour et par personne)`,p:2,cat:"soin",off:0,name:"Masques FFP2",q:"masques FFP2"},
 
   // 3 — Utiles : du confort, à ajouter quand le reste est prêt
   {id:"jeux",p:3,cat:"outils",off:1,name:"Jeux pour occuper le temps",note:"Cartes, petit jeu de société, livre. Précieux avec des enfants.",q:"jeu de cartes voyage"},
@@ -473,7 +497,7 @@ const NEEDS = [
 ];
 const itemName = id => (ITEMS.find(i=>i.id===id)||{name:id}).name;
 function needStatus(n){
-  const has = id => !!state.checked[id];
+  const has = doneById;
   const full = n.sols.filter(s=>s.level==="full" && s.items.every(has));
   if(full.length) return {st:"ok", label: full.length>1?"Couvert, avec une solution de secours":"Couvert", sols:full};
   const anyDone = n.sols.filter(s=>s.items.every(has));
@@ -488,8 +512,8 @@ function renderNeeds(){
     const s = needStatus(n); if(s.st==="ok") ok++;
     return `<article class="need ${s.st}"><header><h4>${n.name}</h4><span class="pill ${s.st}">${s.label}</span></header>
       <ul>${n.sols.map(sol=>{
-        const done = sol.items.every(id=>state.checked[id]);
-        const miss = sol.items.filter(id=>!state.checked[id]);
+        const done = sol.items.every(doneById);
+        const miss = sol.items.filter(id=>!doneById(id));
         return `<li class="${done?"yes":""}"><span aria-hidden="true">${done?"✔":"○"}</span> <span><span class="tag ${sol.off?"off":"plus"}">${sol.off?"Officiel":"Alternative"}</span> ${sol.label}${sol.offNote?` <em>(${sol.offNote})</em>`:""}${sol.level==="partial"?' <em>(dépannage)</em>':""}${!done && miss.length<sol.items.length?`<br><small>Il manque : ${miss.map(itemName).join(", ")}</small>`:""}</span></li>`;
       }).join("")}</ul>${n.tip?`<p class="note">${n.tip}</p>`:""}</article>`;
   }).join("");
@@ -567,8 +591,22 @@ if(["sac","docs","res"].includes(location.hash.slice(1))) showTab(location.hash.
 
 /* ---------- Foyer ---------- */
 const H = ["adults","kids","babies","pets"];
-H.forEach(k=>{ const el=$("#h-"+k); el.value=state.house[k]; el.addEventListener("input",()=>{ state.house[k]=Math.max(0,+el.value||0); save(); renderCalc(); renderChecklist(); }); });
+H.forEach(k=>{ const el=$("#h-"+k); el.value=state.house[k]; el.addEventListener("input",()=>{ state.house[k]=Math.max(0,+el.value||0); save(); renderCalc(); renderNames(); renderChecklist(); }); });
 function people(){ const h=state.house; return h.adults+h.kids+h.babies; }
+function personList(){
+  const h=state.house, out=[], names=h.names||{};
+  [["A","adults","Adulte"],["E","kids","Enfant"],["B","babies","Bébé"]].forEach(([p,k,l])=>{ for(let i=1;i<=h[k];i++){ const key=p+i; out.push({k:key,type:k,label:(names[key]||"").trim()||`${l} ${i}`}); } });
+  return out;
+}
+function subsOf(i){ if(!i.per) return null; const all=personList(); return i.per==="adults"?all.filter(p=>p.type==="adults"):all; }
+function itemCount(i){ const subs=subsOf(i); if(!subs) return [state.checked[i.id]?1:0,1]; return [subs.filter(p=>state.checked[i.id+"#"+p.k]).length, subs.length]; }
+function itemDone(i){ const [d,t]=itemCount(i); return t>0 && d===t; }
+function doneById(id){ const i=ITEMS.find(x=>x.id===id); return i?itemDone(i):!!state.checked[id]; }
+function renderNames(){
+  const old=state.house.names||{};
+  $("#names").innerHTML=personList().map(p=>`<label for="nm-${p.k}">${{adults:"Adulte",kids:"Enfant",babies:"Bébé"}[p.type]} ${p.k.slice(1)}<input id="nm-${p.k}" data-name="${p.k}" value="${esc(old[p.k]||"")}" placeholder="Prénom"></label>`).join("");
+}
+$("#names").addEventListener("input",e=>{ const k=e.target.dataset.name; if(!k) return; state.house.names=state.house.names||{}; state.house.names[k]=e.target.value; save(); renderChecklist(); });
 function renderCalc(){
   const p = people(), h = state.house;
   $("#calc").innerHTML = `Pour <b>${p}</b> personne${p>1?"s":""} : <b>${p*6} L</b> d'eau (6 L par personne), <b>${p*3}</b> rations journalières, <b>${p}</b> couverture${p>1?"s":""} de survie`+(h.pets?`, et de quoi nourrir <b>${h.pets}</b> animal${h.pets>1?"aux":""} 3 jours`:"")+`.`;
@@ -579,19 +617,24 @@ let filter = "all";
 document.querySelectorAll(".chip[data-f]").forEach(b=>b.addEventListener("click",()=>{ filter=b.dataset.f; document.querySelectorAll(".chip[data-f]").forEach(x=>x.setAttribute("aria-pressed",x===b)); renderChecklist(); }));
 let view = state.view || "prio";
 document.querySelectorAll(".chip.view").forEach(b=>{ b.setAttribute("aria-pressed",b.dataset.v===view); b.addEventListener("click",()=>{ view=state.view=b.dataset.v; save(); document.querySelectorAll(".chip.view").forEach(x=>x.setAttribute("aria-pressed",x===b)); renderChecklist(); }); });
-function visibleItems(){ return ITEMS.filter(i=>!i.when || state.house[i.when]>0).sort((a,b)=>a.p-b.p); }
+function visibleItems(){ return ITEMS.filter(i=>(!i.when || state.house[i.when]>0) && (!i.per || subsOf(i).length)).sort((a,b)=>a.p-b.p); }
 function isLate(d){ if(!d) return false; const t=new Date(d); const soon=new Date(); soon.setMonth(soon.getMonth()+2); return t < soon; }
 const catName = id => CATS.find(c=>c.id===id).name;
 const lvl = p => LEVELS.find(l=>l.p===p);
-function keep(i){ return filter==="all" || (filter==="p1"&&i.p===1) || (filter==="todo"&&!state.checked[i.id]) || (filter==="off"&&i.off) || (filter==="exp"&&i.exp); }
+function keep(i){ return filter==="all" || (filter==="p1"&&i.p===1) || (filter==="todo"&&!itemDone(i)) || (filter==="off"&&i.off) || (filter==="exp"&&i.exp); }
 function itemHTML(i){
-  const d = state.exp[i.id]||"";
-  return `<div class="item ${state.checked[i.id]?"done":""}">
-    <input type="checkbox" id="ck-${i.id}" data-id="${i.id}" ${state.checked[i.id]?"checked":""}>
+  const d = state.exp[i.id]||"", subs=subsOf(i), [dn,tot]=itemCount(i), n=people();
+  const st = dn===tot ? "done" : dn>0 ? "partial" : "todo";
+  const missLabel = subs ? (st==="done"?"":`<span class="state ${st}">Manque ${tot-dn} sur ${tot}</span>`) : (st==="todo"?`<span class="state todo">À trouver</span>`:"");
+  return `<div class="item ${st}" id="it-${i.id}">
+    <input type="checkbox" id="ck-${i.id}" data-id="${i.id}" ${dn===tot?"checked":""} ${subs?`data-all="1" aria-label="${esc(i.name)} : tout le monde"`:""}>
     <div class="body">
       <label class="name" for="ck-${i.id}">${esc(i.name)}</label>
+      ${i.qty?`<span class="qty">${esc(i.qty(n,state.house))}</span>`:""}
+      ${subs?`<div class="persons">${subs.map(p=>{const on=!!state.checked[i.id+"#"+p.k]; return `<label class="pc ${on?"on":""}"><input type="checkbox" id="ck-${i.id}-${p.k}" data-sub="${i.id}#${p.k}" ${on?"checked":""}>${esc(p.label)}</label>`;}).join("")}</div>`:""}
       ${i.note?`<span class="note">${esc(i.note)}</span>`:""}
       <div class="meta">
+        ${missLabel}
         ${view==="cat"?`<span class="lvl p${i.p}">${lvl(i.p).tag}</span>`:`<span class="theme">${catName(i.cat)}</span>`}
         <span class="tag ${i.off?"off":"plus"}">${i.off?"Officiel":"Alternative"}</span>
         ${i.q?`<a class="buy" href="${amazon(i.q)}" target="_blank" rel="noopener sponsored">Voir sur Amazon</a>`:""}
@@ -599,6 +642,18 @@ function itemHTML(i){
         ${i.exp?`<span class="exp ${isLate(d)?"late":""}"><label for="ex-${i.id}">Péremption</label><input type="date" id="ex-${i.id}" data-exp="${i.id}" value="${d}"></span>`:""}
       </div>
     </div></div>`;
+}
+const openLv={};
+function renderMissing(items){
+  const miss=items.filter(i=>!itemDone(i));
+  const box=$("#missing");
+  if(!miss.length){ box.className="missing ok"; box.innerHTML=`<h3>Rien ne manque</h3><p class="note">Votre sac contient tout. Pensez à vérifier les péremptions deux fois par an.</p>`; return; }
+  box.className="missing";
+  box.innerHTML=`<h3>Il vous manque ${miss.length} article${miss.length>1?"s":""}</h3>`+
+    LEVELS.map(l=>{ const m=miss.filter(i=>i.p===l.p); if(!m.length) return "";
+      const chips=`<div class="mchips">${m.map(i=>{ const subs=subsOf(i); let who=""; if(subs){ const left=subs.filter(p=>!state.checked[i.id+"#"+p.k]).map(p=>p.label); who=" : "+left.join(", "); } return `<button class="mchip p${i.p}" data-jump="${i.id}">${esc(i.name)}${esc(who)}</button>`; }).join("")}</div>`;
+      return l.p===1 ? `<div class="mrow"><span class="label">${l.name} (${m.length})</span>${chips}</div>`
+        : `<details class="mrow" ${openLv[l.p]?"open":""} data-lv="${l.p}"><summary class="label">${l.name} (${m.length})</summary>${chips}</details>`; }).join("");
 }
 function renderChecklist(){
   const items = visibleItems();
@@ -608,11 +663,13 @@ function renderChecklist(){
   $("#cats").innerHTML = groups.map(g=>{
     const list = g.all.filter(keep);
     if(!list.length) return "";
-    const done = g.all.filter(i=>state.checked[i.id]).length;
+    const done = g.all.filter(itemDone).length;
     return `<section class="cat ${g.cls}" style="--c:${g.c}"><header><h3>${g.name}</h3><span class="count">${done}/${g.all.length}</span>${g.why?`<p>${g.why}</p>`:""}</header><div class="list">`+
       list.map(itemHTML).join("")+`</div></section>`;
   }).join("");
-  const done = items.filter(i=>state.checked[i.id]).length, p1 = items.filter(i=>i.p===1), p1Done = p1.filter(i=>state.checked[i.id]).length;
+  document.querySelectorAll("#cats input[data-all]").forEach(cb=>{ const it=ITEMS.find(x=>x.id===cb.dataset.id); const [d,t]=itemCount(it); cb.indeterminate=d>0&&d<t; });
+  renderMissing(items);
+  const done = items.filter(itemDone).length, p1 = items.filter(i=>i.p===1), p1Done = p1.filter(itemDone).length;
   const pct = Math.round(100*done/items.length);
   $("#pct").textContent = pct+" %";
   $("#pct-detail").textContent = `${done}/${items.length} articles · indispensables ${p1Done}/${p1.length}`;
@@ -620,8 +677,18 @@ function renderChecklist(){
   renderNeeds();
 }
 $("#cats").addEventListener("change",e=>{
-  if(e.target.dataset.id){ state.checked[e.target.dataset.id]=e.target.checked; save(); renderChecklist(); }
+  if(e.target.dataset.sub){ state.checked[e.target.dataset.sub]=e.target.checked; save(); renderChecklist(); return; }
+  if(e.target.dataset.id){
+    const it=ITEMS.find(x=>x.id===e.target.dataset.id), subs=subsOf(it);
+    if(subs) subs.forEach(p=>state.checked[it.id+"#"+p.k]=e.target.checked); else state.checked[it.id]=e.target.checked;
+    save(); renderChecklist(); }
   if(e.target.dataset.exp){ state.exp[e.target.dataset.exp]=e.target.value; save(); renderChecklist(); }
+});
+$("#missing").addEventListener("toggle",e=>{ if(e.target.dataset.lv) openLv[e.target.dataset.lv]=e.target.open; },true);
+$("#missing").addEventListener("click",e=>{
+  const b=e.target.closest("[data-jump]"); if(!b) return;
+  if(filter!=="all"){ filter="all"; document.querySelectorAll(".chip[data-f]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.f==="all")); renderChecklist(); }
+  const el=document.getElementById("it-"+b.dataset.jump); if(el){ el.scrollIntoView({behavior:"smooth",block:"center"}); const cb=el.querySelector("input[type=checkbox]"); cb&&cb.focus({preventScroll:true}); }
 });
 $("#cats").addEventListener("click",e=>{ const g=e.target.closest("[data-go]"); if(g){ e.preventDefault(); showTab(g.dataset.go); window.scrollTo(0,0);} });
 let resetArmed=false;
@@ -727,7 +794,9 @@ function dossierHTML(){
 function checklistHTML(){
   const p=people();
   return `<h1>Checklist du sac 72 h</h1><p>Foyer de ${p} personne${p>1?"s":""} : ${p*6} L d'eau. Vérifier deux fois par an.</p>`+
-    LEVELS.map(l=>`<h2>${l.name}</h2>`+visibleItems().filter(i=>i.p===l.p).map(i=>`<div><span class="ck"></span>${state.checked[i.id]?"✔ ":""}${esc(i.name)}${state.exp[i.id]?" (péremption "+new Date(state.exp[i.id]).toLocaleDateString("fr-FR")+")":""}</div>`).join("")).join("");
+    LEVELS.map(l=>`<h2>${l.name}</h2>`+visibleItems().filter(i=>i.p===l.p).map(i=>{ const subs=subsOf(i), n=people();
+      return `<div style="margin:3pt 0"><span class="ck"></span>${itemDone(i)?"✔ ":""}<b>${esc(i.name)}</b>${i.qty?" — "+esc(i.qty(n,state.house)):""}${state.exp[i.id]?" (péremption "+new Date(state.exp[i.id]).toLocaleDateString("fr-FR")+")":""}`+
+      (subs?`<div style="margin-left:18pt">${subs.map(p=>`<span style="margin-right:12pt"><span class="ck"></span>${state.checked[i.id+"#"+p.k]?"✔ ":""}${esc(p.label)}</span>`).join("")}</div>`:"")+`</div>`; }).join("")).join("");
 }
 function printNow(html){ $("#print-area").innerHTML=html; setTimeout(()=>window.print(),50); }
 $("#print-all").addEventListener("click",()=>printNow(dossierHTML()));
@@ -790,6 +859,6 @@ $("#import-no").addEventListener("click",()=>{ pending=null; $("#import-confirm"
 $("#res-list").innerHTML = RESOURCES.map(g=>`<div class="panel"><h3>${g.t}</h3><ul class="links">${g.items.map(([u,t,s])=>`<li><a href="${u}" target="_blank" rel="noopener">${t}</a><span>${s}</span></li>`).join("")}</ul></div>`).join("");
 
 /* ---------- Démarrage ---------- */
-renderCalc(); renderChecklist(); renderContacts(); renderFiles(); renderSaveBar();
+renderCalc(); renderNames(); renderChecklist(); renderContacts(); renderFiles(); renderSaveBar();
 idb().then(idbAll).then(list=>{ if(list.length){ files=list; renderFiles(); renderSaveBar(); } });
 </script>
